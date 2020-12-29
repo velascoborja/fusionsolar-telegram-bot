@@ -1,0 +1,19 @@
+{
+  "name": "borjatelegrambot",
+  "version": "1.0.0",
+  "description": "Thingiverse Telegram bot",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://borjavg@bitbucket.org/borjavg/telegrambot.git"
+  },
+  "author": "BorjaVG",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/borjavg/telegrambot#readme",
+  "dependencies": {
+    "telegraf": "^3.38.0"
+  }
+}
