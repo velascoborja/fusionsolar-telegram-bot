@@ -18,5 +18,6 @@
     "dotenv": "^8.2.0",
     "telegraf": "^3.38.0",
     "telegraf-command-parts": "^1.0.3"
-  }
+  },
+  "devDependencies": {}
 }
