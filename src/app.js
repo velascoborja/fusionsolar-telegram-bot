@@ -3,7 +3,6 @@ const commandParts = require('telegraf-command-parts')
 const { Telegraf, Markup, Router } = require('telegraf')
 const dotenv = require('dotenv').config()
 
-
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 const instance = axios.create({
@@ -27,7 +26,7 @@ bot.command('likes', (ctx) => {
       })
     })
     .catch(function (error) {
-      return ctx.reply("Couldn't retrieve yout likes 😔")
+      return ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
     })
 })
 
@@ -38,6 +37,10 @@ bot.command('collections', (ctx) => {
   // Make a request for a user with a given ID
   instance.get(`users/${ctx.state.command.splitArgs[0]}/collections`)
     .then(function (response) {
+      /*       response.data.forEach(element =>
+              ctx.reply(element.absolute_url)
+            ) */
+
       const collections = Markup.inlineKeyboard(response.data.map(it =>
         Markup.callbackButton(it.name, it.id)
       )).extra()
@@ -48,7 +51,7 @@ bot.command('collections', (ctx) => {
       )
     })
     .catch(function (error) {
-      return ctx.reply("Couldn't retrieve yout collections 😔")
+      return ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
     })
 })
 
@@ -66,5 +69,16 @@ bot.on('message', (ctx) => ctx.telegram.sendMessage(
 
 bot.action('like', (ctx) => ctx.editMessageText('🎉 Awesome! 🎉'))
 bot.action('dislike', (ctx) => ctx.editMessageText('okey')) */
+
+bot.command('random', (ctx) => {
+  ctx.reply('random example',
+    Markup.inlineKeyboard([
+      [Markup.callbackButton('Plain', 'plain')],
+      [Markup.callbackButton('Plain', 'plain')],
+      [Markup.callbackButton('Plain', 'plain')],
+      [Markup.callbackButton('Plain', 'plain')],
+    ]).extra()
+  )
+})
 
 bot.launch()
