@@ -47,16 +47,21 @@ bot.command('collections', (ctx) => {
   // Make a request for a user with a given ID
   thingiverse.get(`users/${ctx.state.command.splitArgs[0]}/collections`)
     .then(function (response) {
-      /*       response.data.forEach(element =>
-              ctx.reply(element.absolute_url)
-            ) */
+      const bigarray = response.data
+      const collectionArrays = []
 
-      const collections = Markup.inlineKeyboard(response.data.map(it =>
-        Markup.callbackButton(it.name, it.id)
+      var size = 3;
+
+      for (var i = 0; i < bigarray.length; i += size) {
+        collectionArrays.push(bigarray.slice(i, i + size));
+      }
+
+      const collections = Markup.inlineKeyboard(collectionArrays.map(it =>  
+        it.map(it => Markup.callbackButton(it.name, it.id))
       )).extra()
 
       return ctx.reply(
-        'Like?',
+        "📚 These are your colletions",
         collections
       )
     })
