@@ -41,7 +41,6 @@ bot.command('likes', (ctx) => {
 
 /* ---Gets all COLLECTIONS from selected user--- */
 bot.command('collections', (ctx) => {
-
   ctx.reply("⏳ Loading your collections...")
 
   // Make a request for a user with a given ID
@@ -50,7 +49,7 @@ bot.command('collections', (ctx) => {
       const bigarray = response.data
       const collectionArrays = []
 
-      var size = 3;
+      var size = 2;
 
       for (var i = 0; i < bigarray.length; i += size) {
         collectionArrays.push(bigarray.slice(i, i + size));
