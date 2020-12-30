@@ -1,7 +1,6 @@
-import { Telegraf, Markup } from 'telegraf'
-import commandParts from 'telegraf-command-parts'
-
-const axios = require('axios').default()
+const { Telegraf, Markup } = require('telegraf')
+const commandParts = require('telegraf-command-parts');
+const axios = require('axios')
 const dotenv = require('dotenv').config()
 
 const thingiverse = axios.create({
@@ -12,29 +11,38 @@ const thingiverse = axios.create({
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.use(commandParts())
+
 bot.start((ctx) => ctx.reply('Welcome!'))
 bot.help((ctx) => ctx.reply('Check available options tapping right side button'))
 
-/* - Gets likes from selected user --- */
+/* ---Gets LIKES from selected user--- */
 bot.command('likes', (ctx) => {
 
-  ctx.reply("Checking your likes... 👍")
+  const userName = ctx.state.command.splitArgs[0]
 
-  thingiverse.get(`users/${ctx.state.command.splitArgs[0]}/likes`)
-    .then(function (response) {
-      response.data.forEach(element => {
-        ctx.reply(element.public_url)
+  if (!userName == "") {
+    ctx.reply("⏳ Loading your likes...")
+
+    thingiverse.get(`users/${userName}/likes`)
+      .then(async function (response) {
+        ctx.reply("❤️ These are your likes")
+
+        for (const element of response.data) {
+          await ctx.replyWithPhoto(element.thumbnail, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
+        }
+
+        ctx.reply("🏁 That's all!")
       })
-    })
-    .catch(function (error) {
-      return ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
-    })
+      .catch(function (error) {
+        return ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
+      })
+  } else ctx.reply("Username was not specified 🤭")
 })
 
-/* --- Gets all collections from selected user --- */
+/* ---Gets all COLLECTIONS from selected user--- */
 bot.command('collections', (ctx) => {
 
-  ctx.reply("Checking your collections... 📚")
+  ctx.reply("⏳ Loading your collections...")
 
   // Make a request for a user with a given ID
   thingiverse.get(`users/${ctx.state.command.splitArgs[0]}/collections`)
@@ -55,17 +63,6 @@ bot.command('collections', (ctx) => {
     .catch(function (error) {
       return ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
     })
-})
-
-bot.command('random', (ctx) => {
-  ctx.reply('random example',
-    Markup.inlineKeyboard([
-      [Markup.callbackButton('Plain', 'plain')],
-      [Markup.callbackButton('Plain', 'plain')],
-      [Markup.callbackButton('Plain', 'plain')],
-      [Markup.callbackButton('Plain', 'plain')],
-    ]).extra()
-  )
 })
 
 bot.launch()
