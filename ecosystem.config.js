@@ -1,6 +1,6 @@
 module.exports = {
     apps : [{
-      name: "Thingicerse Bot",
+      name: "Borja Thingicerse Bot",
       script: "src/app.js",
       instances: "max",
       env: {
