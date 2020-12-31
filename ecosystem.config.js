@@ -2,7 +2,7 @@ module.exports = {
     apps : [{
       name: "Borja Thingicerse Bot",
       script: "src/app.js",
-      instances: "max",
+      instances: "1",
       env: {
         NODE_ENV: "development",
       },
