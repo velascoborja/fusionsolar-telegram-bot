@@ -1,5 +1,5 @@
 {
-  "name": "borjatelegrambot",
+  "name": "thingiversemakerbot",
   "version": "1.0.0",
   "description": "Thingiverse Telegram bot",
   "main": "src/app.js",
