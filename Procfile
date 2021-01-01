@@ -1,1 +1,1 @@
-worker: node src/app.js
+worker: pm2 start src/app.js
