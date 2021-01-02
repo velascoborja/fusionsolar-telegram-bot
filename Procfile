@@ -1,1 +1,1 @@
-worker: pm2-runtime start src/app.ts
+worker: pm2 install typescript && pm2-runtime start src/app.ts
