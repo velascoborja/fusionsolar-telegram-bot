@@ -1,8 +1,9 @@
-const { Telegraf, Markup } = require('telegraf')
-const commandParts = require('telegraf-command-parts');
-const axios = require('axios')
-const dotenv = require('dotenv').config()
-const utils = require('./utils')
+import { Telegraf, Markup } from 'telegraf'
+import axios from 'axios'
+import * as Utils from './utils'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const thingiverse = axios.create({
   baseURL: 'https://api.thingiverse.com/',
@@ -10,8 +11,7 @@ const thingiverse = axios.create({
   headers: { 'authorization': `Bearer ${process.env.THINGIVERSE_TOKEN}` }
 });
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
-bot.use(commandParts())
+const bot = new Telegraf(process.env.BOT_TOKEN || '')
 
 bot.start((ctx) => ctx.reply('Welcome!'))
 bot.help((ctx) => ctx.reply('Check available options tapping right side button'))
@@ -19,9 +19,9 @@ bot.help((ctx) => ctx.reply('Check available options tapping right side button')
 /* ---Gets LIKES from selected user--- */
 bot.command('likes', (ctx) => {
 
-  const userName = utils.removeCmd(ctx.message.text)
+  const userName = Utils.removeCmd(ctx.message?.text)
 
-  if (!userName == "") {
+  if (userName != '') {
     ctx.reply("⏳ Loading your likes...")
 
     thingiverse.get(`users/${userName}/likes`)
@@ -44,32 +44,34 @@ bot.command('likes', (ctx) => {
 bot.command('collections', (ctx) => {
   ctx.reply("⏳ Loading your collections...")
 
-  const username = utils.removeCmd(ctx.message.text)
+  const username = Utils.removeCmd(ctx.message?.text)
 
   // Make a request for a user with a given ID
-  thingiverse.get(`users/${username}/collections`)
-    .then(function (response) {
-      const bigarray = response.data
-      const collectionArrays = []
+  if (username != undefined) {
+    thingiverse.get(`users/${username}/collections`)
+      .then(function (response) {
+        const bigarray = response.data
+        const collectionArrays = []
 
-      var size = 2;
+        var size = 2;
 
-      for (var i = 0; i < bigarray.length; i += size) {
-        collectionArrays.push(bigarray.slice(i, i + size));
-      }
+        for (var i = 0; i < bigarray.length; i += size) {
+          collectionArrays.push(bigarray.slice(i, i + size));
+        }
 
-      const collections = Markup.inlineKeyboard(collectionArrays.map(it =>  
-        it.map(it => Markup.callbackButton(it.name, it.id))
-      )).extra()
+        const collections = Markup.inlineKeyboard(collectionArrays.map(it =>
+          it.map((it: { name: string; id: string; }) => Markup.callbackButton(it.name, it.id))
+        )).extra()
 
-      return ctx.reply(
-        "📚 These are your colletions",
-        collections
-      )
-    })
-    .catch(function (error) {
-      return ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
-    })
+        return ctx.reply(
+          "📚 These are your colletions",
+          collections
+        )
+      })
+      .catch(function (error) {
+        return ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
+      })
+  } else ctx.reply("Username was not specified 🤭")
 })
 
 bot.launch()
