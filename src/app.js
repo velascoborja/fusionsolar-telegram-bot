@@ -2,6 +2,7 @@ const { Telegraf, Markup } = require('telegraf')
 const commandParts = require('telegraf-command-parts');
 const axios = require('axios')
 const dotenv = require('dotenv').config()
+const utils = require('./utils')
 
 const thingiverse = axios.create({
   baseURL: 'https://api.thingiverse.com/',
@@ -18,7 +19,7 @@ bot.help((ctx) => ctx.reply('Check available options tapping right side button')
 /* ---Gets LIKES from selected user--- */
 bot.command('likes', (ctx) => {
 
-  const userName = ctx.state.command.splitArgs[0]
+  const userName = utils.removeCmd(ctx.message.text)
 
   if (!userName == "") {
     ctx.reply("⏳ Loading your likes...")
@@ -43,8 +44,10 @@ bot.command('likes', (ctx) => {
 bot.command('collections', (ctx) => {
   ctx.reply("⏳ Loading your collections...")
 
+  const username = utils.removeCmd(ctx.message.text)
+
   // Make a request for a user with a given ID
-  thingiverse.get(`users/${ctx.state.command.splitArgs[0]}/collections`)
+  thingiverse.get(`users/${username}/collections`)
     .then(function (response) {
       const bigarray = response.data
       const collectionArrays = []
