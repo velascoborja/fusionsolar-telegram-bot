@@ -10,7 +10,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
         const username = Utils.removeCmd(ctx.message?.text)
         const rows = 2
 
-        if (username != undefined) {
+        if (username != '') {
             thingiverse.getCollections(username)
                 .then(function (collections) {
                     const collectionArrays = []
