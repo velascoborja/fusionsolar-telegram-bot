@@ -3,8 +3,6 @@ import Thingiverse from "../api/thingiverse"
 import { Collection } from "../models/collection"
 import * as Utils from './../utils'
 
-const collections: Array<Collection> = []
-
 function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
     bot.command('collections', (ctx) => {
@@ -14,7 +12,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
         const rows = 2
 
         if (username != '') {
-            thingiverse.getCollections(username)
+            thingiverse.getUserCollections(username)
                 .then(function (collections) {
                     if (collections.length > 0) {
                         const collectionArrays = []
@@ -39,14 +37,14 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
         } else ctx.reply("Username was not specified 🤭")
     })
 
-    bot.action(/collection (.+)/, (ctx) => {
+    bot.action(/collection (.+)/, async (ctx) => {
         const collectionId = ctx.match[1]
-        const collectionName = collections.find(element => element.id == collectionId).name || ""
+        const collectionName = (await thingiverse.getCollectionForId(collectionId))?.name || ''
 
-        thingiverse.getCollectionItems(collectionId)
+        thingiverse.getItemsForCollection(collectionId)
             .then(async function (things) {
                 if (things.length > 0) {
-                    ctx.reply(`📚 Things from ${collectionName} collection:`)
+                    ctx.reply(`📚 Things from "${collectionName}" collection:`)
 
                     for (const element of things) {
                         await ctx.replyWithPhoto(element.preview_image, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })

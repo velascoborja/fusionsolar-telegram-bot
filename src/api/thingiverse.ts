@@ -1,9 +1,10 @@
 import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
 import { Thing } from '../models/thing';
+import { get } from './utils';
 
 class Thingiverse {
-    
+
     private api: AxiosInstance
 
     constructor(token: string) {
@@ -14,40 +15,20 @@ class Thingiverse {
         })
     }
 
-    getLikes(userName: string): Promise<Array<Thing>> {
-        return new Promise((resolve, reject) => {
-            this.api.get(`users/${userName}/likes`)
-                .then(async function (response) {
-                    resolve(response.data)
-                })
-                .catch(function (error) {
-                    reject(error)
-                })
-        })
+    getUserLikes(userName: string): Promise<Array<Thing>> {
+        return get(this.api, `users/${userName}/likes`)
     }
 
-    getCollections(userName: string): Promise<Array<Collection>> {
-        return new Promise((resolve, reject) => {
-            this.api.get(`users/${userName}/collections`)
-                .then(async function (response) {
-                    resolve(response.data)
-                })
-                .catch(function (error) {
-                    reject(error)
-                })
-        })
+    getUserCollections(userName: string): Promise<Array<Collection>> {
+        return get(this.api, `users/${userName}/collections`)
     }
 
-    getCollectionItems(collectionId: string) : Promise<Array<Thing>>{
-        return new Promise((resolve, reject) => {
-            this.api.get(`collections/${collectionId}/things`)
-                .then(async function (response) {
-                    resolve(response.data)
-                })
-                .catch(function (error) {
-                    reject(error)
-                })
-        })
+    getItemsForCollection(collectionId: string): Promise<Array<Thing>> {
+        return get(this.api, `collections/${collectionId}/things`)
+    }
+
+    getCollectionForId(collectionId: string): Promise<Collection> {
+        return get(this.api, `collections/${collectionId}`)
     }
 }
 

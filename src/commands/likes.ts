@@ -13,7 +13,7 @@ function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
         if (userName != '') {
             ctx.reply("⏳ Loading your likes...")
 
-            thingiverse.getLikes(userName)
+            thingiverse.getUserLikes(userName)
                 .then(async function (things) {
                     if (things.length > 0) {
                         ctx.reply("❤️ These are your likes")
