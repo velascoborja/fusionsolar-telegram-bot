@@ -22,7 +22,7 @@ function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
                         }
 
                         ctx.reply("🏁 That's all!")
-                    } else ctx.reply("∅ No collections were found")
+                    } else ctx.reply("0️⃣ No likes were found")
                 })
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")

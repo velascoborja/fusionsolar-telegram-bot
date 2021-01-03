@@ -29,7 +29,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                             "📚 These are your colletions",
                             collectionsKeyboard
                         )
-                    } else ctx.reply("∅ No collections were found")
+                    } else ctx.reply("0️⃣ No collections were found")
                 })
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
