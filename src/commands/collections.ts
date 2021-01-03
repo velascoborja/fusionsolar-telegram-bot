@@ -39,7 +39,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
         } else ctx.reply("Username was not specified 🤭")
     })
 
-    bot.action(/collection (.+) (.+)/, (ctx) => {
+    bot.action(/collection (.+)/, (ctx) => {
         const collectionId = ctx.match[1]
         const collectionName = collections.find(element => element.id == collectionId).name || ""
 
