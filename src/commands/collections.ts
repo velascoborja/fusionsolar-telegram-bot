@@ -1,4 +1,5 @@
 import { Markup, Telegraf } from "telegraf"
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript"
 import Thingiverse from "../api/thingiverse"
 import * as Utils from './../utils'
 
@@ -13,23 +14,25 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
         if (username != '') {
             thingiverse.getCollections(username)
                 .then(function (collections) {
-                    const collectionArrays = []
+                    if (collections.length > 0) {
+                        const collectionArrays = []
 
-                    for (var i = 0; i < collections.length; i += rows) {
-                        collectionArrays.push(collections.slice(i, i + rows));
-                    }
+                        for (var i = 0; i < collections.length; i += rows) {
+                            collectionArrays.push(collections.slice(i, i + rows));
+                        }
 
-                    const collectionsKeyboard = Markup.inlineKeyboard(collectionArrays.map(it =>
-                        it.map((it: { name: string; id: string; }) => Markup.callbackButton(it.name, it.id))
-                    )).extra()
+                        const collectionsKeyboard = Markup.inlineKeyboard(collectionArrays.map(it =>
+                            it.map((it: { name: string; id: string; }) => Markup.callbackButton(it.name, it.id))
+                        )).extra()
 
-                    return ctx.reply(
-                        "📚 These are your colletions",
-                        collectionsKeyboard
-                    )
+                        ctx.reply(
+                            "📚 These are your colletions",
+                            collectionsKeyboard
+                        )
+                    } else ctx.reply("∅ No collections were found")
                 })
                 .catch(function (error) {
-                    return ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
+                    ctx.reply("Couldn't retrieve yout collections 🤷‍♂️")
                 })
         } else ctx.reply("Username was not specified 🤭")
     })

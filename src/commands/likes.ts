@@ -14,16 +14,18 @@ function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
             thingiverse.getLikes(userName)
                 .then(async function (likes) {
-                    ctx.reply("❤️ These are your likes")
+                    if (likes.length > 0) {
+                        ctx.reply("❤️ These are your likes")
 
-                    for (const element of likes) {
-                        await ctx.replyWithPhoto(element.thumbnail, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
-                    }
+                        for (const element of likes) {
+                            await ctx.replyWithPhoto(element.thumbnail, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
+                        }
 
-                    ctx.reply("🏁 That's all!")
+                        ctx.reply("🏁 That's all!")
+                    } else ctx.reply("∅ No collections were found")
                 })
                 .catch(function (error) {
-                    return ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
+                    ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
                 })
         } else ctx.reply("Username was not specified 🤭")
     })
