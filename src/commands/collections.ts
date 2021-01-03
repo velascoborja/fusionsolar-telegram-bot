@@ -1,6 +1,9 @@
 import { Extra, Markup, Telegraf } from "telegraf"
 import Thingiverse from "../api/thingiverse"
+import { Collection } from "../models/collection"
 import * as Utils from './../utils'
+
+const collections: Array<Collection> = []
 
 function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
@@ -21,7 +24,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                         }
 
                         const collectionsKeyboard = Markup.inlineKeyboard(collectionArrays.map(it =>
-                            it.map((it: { name: string; id: string; }) => Markup.callbackButton(it.name, `collection ${it.id} ${it.name}`))
+                            it.map((it: { name: string; id: string; }) => Markup.callbackButton(it.name, `collection ${it.id}`))
                         )).extra()
 
                         ctx.reply(
@@ -38,7 +41,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
     bot.action(/collection (.+) (.+)/, (ctx) => {
         const collectionId = ctx.match[1]
-        const collectionName = ctx.match[2]
+        const collectionName = collections.find(element => element.id == collectionId).name || ""
 
         thingiverse.getCollectionItems(collectionId)
             .then(async function (things) {
