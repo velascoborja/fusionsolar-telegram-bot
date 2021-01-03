@@ -1,5 +1,6 @@
 import { Extra, Markup, Telegraf } from "telegraf"
 import Thingiverse from "../api/thingiverse"
+import { thingToMessage } from "../messages"
 import { Collection } from "../models/collection"
 import * as Utils from './../utils'
 
@@ -38,6 +39,8 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
     })
 
     bot.action(/collection (.+)/, async (ctx) => {
+        ctx.reply("⏳ Loading your things...")
+
         const collectionId = ctx.match[1]
         const collectionName = (await thingiverse.getCollectionForId(collectionId))?.name || ''
 
@@ -47,7 +50,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                     ctx.reply(`📚 Things from "${collectionName}" collection:`)
 
                     for (const element of things) {
-                        await ctx.replyWithPhoto(element.preview_image, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
+                        await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
                     }
 
                     ctx.reply("🏁 That's all!")

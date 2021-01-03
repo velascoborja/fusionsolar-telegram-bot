@@ -7,6 +7,7 @@ import commandCollections from './commands/collections'
 import commandStart from './commands/start'
 import commandHelp from './commands/help'
 import commandDesigns from './commands/designs'
+import commandDownload from './commands/download'
 
 dotenv.config()
 
@@ -18,5 +19,6 @@ commandHelp(bot)
 commandLikes(bot, thingiverse)
 commandCollections(bot, thingiverse)
 commandDesigns(bot, thingiverse)
+commandDownload(bot, thingiverse)
 
 bot.launch()

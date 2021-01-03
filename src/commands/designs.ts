@@ -1,5 +1,6 @@
 import { Telegraf } from "telegraf"
 import Thingiverse from "../api/thingiverse"
+import { thingToMessage } from "../messages"
 import * as Utils from "../utils"
 
 function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse) {
@@ -11,7 +12,7 @@ function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse) {
                     ctx.reply("🎨 These are your designs")
 
                     for (const element of designs) {
-                        await ctx.replyWithPhoto(element.thumbnail, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
+                        await ctx.replyWithPhoto(element.thumbnail, { caption: thingToMessage(element) })
                     }
 
                     ctx.reply("🏁 That's all!")

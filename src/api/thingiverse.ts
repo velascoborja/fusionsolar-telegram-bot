@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
+import { Download } from '../models/download';
 import { Thing } from '../models/thing';
 import { get } from './utils';
 
@@ -33,6 +34,10 @@ class Thingiverse {
 
     getUsersDesigns(userName: string): Promise<Array<Thing>> {
         return get(this.api, `users/${userName}/things`)
+    }
+
+    getThingUrl(thingId: any): Promise<Download> {
+        return get(this.api, `things/${thingId}/package-url`)
     }
 }
 
