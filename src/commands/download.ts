@@ -9,7 +9,7 @@ function commandDownload(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
         thingiverse.getThingUrl(thingId)
             .then(function (url) {
-                ctx.replyWithDocument(url.public_url)
+                ctx.replyWithDocument(url.public_url.replace(" ", "_"))
             })
             .catch(function (error) {
                 ctx.reply("Couldn't download files 🤷‍♂️")
