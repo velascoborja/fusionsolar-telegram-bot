@@ -30,6 +30,10 @@ class Thingiverse {
     getCollectionForId(collectionId: string): Promise<Collection> {
         return get(this.api, `collections/${collectionId}`)
     }
+
+    getUsersDesigns(userName: string): Promise<Array<Thing>> {
+        return get(this.api, `users/${userName}/things`)
+    }
 }
 
 export default Thingiverse
