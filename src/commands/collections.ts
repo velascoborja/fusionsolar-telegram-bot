@@ -1,5 +1,4 @@
 import { Markup, Telegraf } from "telegraf"
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript"
 import Thingiverse from "../api/thingiverse"
 import * as Utils from './../utils'
 
