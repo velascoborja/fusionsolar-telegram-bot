@@ -1,6 +1,7 @@
 import { Creator } from "./creator";
+import { Tag } from "./tag";
 
-export interface Like {
+export interface Thing {
     id: number;
     name: string;
     url: string;
@@ -16,13 +17,5 @@ export interface Like {
     like_count: number;
     tags: Tag[];
     is_nsfw?: any;
-}
-
-export interface Tag {
-    name: string;
-    url: string;
-    count: number;
-    things_url: string;
-    absolute_url: string;
 }
 

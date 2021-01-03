@@ -2,6 +2,7 @@ import { Telegraf } from "telegraf"
 import Thingiverse from "../api/thingiverse"
 import * as Utils from './../utils'
 
+const ITEMS_PER_PAGE = 3
 
 function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
@@ -13,11 +14,11 @@ function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
             ctx.reply("⏳ Loading your likes...")
 
             thingiverse.getLikes(userName)
-                .then(async function (likes) {
-                    if (likes.length > 0) {
+                .then(async function (things) {
+                    if (things.length > 0) {
                         ctx.reply("❤️ These are your likes")
 
-                        for (const element of likes) {
+                        for (const element of things) {
                             await ctx.replyWithPhoto(element.thumbnail, { caption: `🏷 ${element.name}\n❤️ ${element.like_count}\n🌐 ${element.public_url}\n` })
                         }
 

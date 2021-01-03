@@ -1,20 +1,20 @@
 import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
-import { Like } from '../models/like';
+import { Thing } from '../models/thing';
 
 class Thingiverse {
-
+    
     private api: AxiosInstance
 
     constructor(token: string) {
         this.api = axios.create({
             baseURL: 'https://api.thingiverse.com/',
-            timeout: 1000,
+            timeout: 15000,
             headers: { 'authorization': `Bearer ${token}` }
         })
     }
 
-    public getLikes(userName: string): Promise<Array<Like>> {
+    getLikes(userName: string): Promise<Array<Thing>> {
         return new Promise((resolve, reject) => {
             this.api.get(`users/${userName}/likes`)
                 .then(async function (response) {
@@ -26,9 +26,21 @@ class Thingiverse {
         })
     }
 
-    public getCollections(userName: string): Promise<Array<Collection>> {
+    getCollections(userName: string): Promise<Array<Collection>> {
         return new Promise((resolve, reject) => {
             this.api.get(`users/${userName}/collections`)
+                .then(async function (response) {
+                    resolve(response.data)
+                })
+                .catch(function (error) {
+                    reject(error)
+                })
+        })
+    }
+
+    getCollectionItems(collectionId: string) : Promise<Array<Thing>>{
+        return new Promise((resolve, reject) => {
+            this.api.get(`collections/${collectionId}/things`)
                 .then(async function (response) {
                     resolve(response.data)
                 })
