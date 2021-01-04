@@ -11,7 +11,6 @@ function commandDownload(bot: Telegraf<any>, thingiverse: Thingiverse) {
             .then(async function (files) {
                 for (const file of files) {
                     const bigSizePreview = file.default_image?.sizes?.find(element => element.type == 'display' && element.size == 'large')
-
                     const photo = bigSizePreview && bigSizePreview || file.thumbnail
                     await ctx.replyWithPhoto(photo, { caption: `🏷 ${file.name}\n🏋️ ${file.formatted_size}\n⬇️ Downloads: ${file.download_count}\n📥 Download: ${file.public_url}` })
                 }

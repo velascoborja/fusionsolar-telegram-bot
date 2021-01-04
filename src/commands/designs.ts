@@ -5,8 +5,13 @@ import * as Utils from "../utils"
 
 function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse) {
     bot.command("designs", (ctx) => {
+
+        ctx.reply("⏳ Retrieving designs...")
+
         const username = Utils.removeCmd(ctx.message.text)
-        thingiverse.getUsersDesigns(username)
+
+        if (username != '') {
+            thingiverse.getUsersDesigns(username)
             .then(async function (designs) {
                 if (designs.length > 0) {
                     ctx.reply("🎨 These are your designs")
@@ -21,6 +26,7 @@ function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse) {
             .catch(function (error) {
                 ctx.reply("Couldn't retrieve yout designs 🤷‍♂️")
             })
+        } else ctx.reply("Username was not specified 🤭")
     })
 }
 
