@@ -7,7 +7,7 @@ import commandCollections from './commands/collections'
 import commandStart from './commands/start'
 import commandHelp from './commands/help'
 import commandDesigns from './commands/designs'
-import commandFiles from './commands/download'
+import commandFiles from './commands/files'
 import commandZip from './commands/zip'
 
 dotenv.config()

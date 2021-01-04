@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf"
 import Thingiverse from "../api/thingiverse"
 
-function commandDownload(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse) {
     bot.hears(/\/dl_(.+)/, (ctx) => {
         ctx.reply("⏳ Retrieving files...")
 
@@ -21,4 +21,4 @@ function commandDownload(bot: Telegraf<any>, thingiverse: Thingiverse) {
     })
 }
 
-export default commandDownload
+export default commandFiles
