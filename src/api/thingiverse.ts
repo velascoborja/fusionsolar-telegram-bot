@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
 import { File } from '../models/file';
+import { Hits } from '../models/hits';
 import { Thing } from '../models/thing';
 import { Zip } from '../models/zip';
 import { get } from './utils';
@@ -50,7 +51,7 @@ class Thingiverse {
 
     }
 
-    searchThings(search: string) {
+    searchThings(search: string): Promise<Hits> {
         return get(this.api, `search/${search}`)
     }
 }

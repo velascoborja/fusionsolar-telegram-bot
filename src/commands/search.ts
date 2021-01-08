@@ -2,6 +2,7 @@ import { Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import Thingiverse from "../api/thingiverse"
 import { thingToMessage } from "../messages"
+import { Hits } from "../models/hits"
 import { Thing } from "../models/thing"
 import { removeCmd } from "../utils"
 
@@ -12,12 +13,12 @@ function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse) {
         ctx.reply(`🔎 Searching things for "${search}"...`)
 
         thingiverse.searchThings(search)
-            .then(async function (things: Array<Thing>) {
-                if (things.length > 0) {
+            .then(async function (hits: Hits) {
+                if (hits.hits.length > 0) {
                     ctx.reply("🎨 These are the things I've found:")
 
                     for (let index = 0; index < 5; index++) {
-                        const element = things[index];
+                        const element = hits.hits[index];
 
                         await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
                     }
