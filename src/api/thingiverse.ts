@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
 import { File } from '../models/file';
 import { Thing } from '../models/thing';
+import { Zip } from '../models/zip';
 import { get } from './utils';
 
 class Thingiverse {
@@ -38,6 +39,10 @@ class Thingiverse {
 
     getFiles(thingId: any): Promise<Array<File>> {
         return get(this.api, `things/${thingId}/files`)
+    }
+
+    getPublicZipUrlForThing(thingId: any) : Promise<Zip>{
+        return get(this.api, `things/${thingId}/package-url`)
     }
 }
 
