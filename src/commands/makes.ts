@@ -27,7 +27,7 @@ function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
                         ctx.reply("🏁 That's all!")
                     } else ctx.reply("0️⃣ No makes were found")
-                })  
+                })
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve yout makes 🤷‍♂️")
                 })

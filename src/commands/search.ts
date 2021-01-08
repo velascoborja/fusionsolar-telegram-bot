@@ -13,12 +13,12 @@ function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse) {
         ctx.reply(`🔎 Searching things for "${search}"...`)
 
         thingiverse.searchThings(search)
-            .then(async function (hits: Hits) {
-                if (hits.hits.length > 0) {
+            .then(async function (result: Hits) {
+                if (result.hits.length > 0) {
                     ctx.reply("🎨 These are the things I've found:")
 
                     for (let index = 0; index < 5; index++) {
-                        const element = hits.hits[index];
+                        const element = result.hits[index];
 
                         await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
                     }
