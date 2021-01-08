@@ -49,6 +49,10 @@ class Thingiverse {
         return get(this.api, `tags/${tag}/things`)
 
     }
+
+    searchThings(search: string) {
+        return get(this.api, `search/${search}`)
+    }
 }
 
 export default Thingiverse
