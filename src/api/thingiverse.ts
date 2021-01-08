@@ -54,6 +54,10 @@ class Thingiverse {
     searchThings(search: string): Promise<Hits> {
         return get(this.api, `search/${search}`)
     }
+
+    getUserMakes(userName: string): Promise<Array<Thing>> {
+        return get(this.api, `users/${userName}/copies`)
+    }
 }
 
 export default Thingiverse
