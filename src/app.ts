@@ -9,6 +9,7 @@ import commandHelp from './commands/help'
 import commandDesigns from './commands/designs'
 import commandFiles from './commands/files'
 import commandZip from './commands/zip'
+import commandTag from './commands/tag'
 
 dotenv.config()
 
@@ -22,5 +23,6 @@ commandCollections(bot, thingiverse)
 commandDesigns(bot, thingiverse)
 commandFiles(bot, thingiverse)
 commandZip(bot, thingiverse)
+commandTag(bot, thingiverse)
 
 bot.launch()

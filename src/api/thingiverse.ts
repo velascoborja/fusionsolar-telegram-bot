@@ -41,8 +41,13 @@ class Thingiverse {
         return get(this.api, `things/${thingId}/files`)
     }
 
-    getPublicZipUrlForThing(thingId: any) : Promise<Zip>{
+    getPublicZipUrlForThing(thingId: any): Promise<Zip> {
         return get(this.api, `things/${thingId}/package-url`)
+    }
+
+    searchThingsByTag(tag: string): Promise<Array<Thing>> {
+        return get(this.api, `tags/${tag}/things`)
+
     }
 }
 

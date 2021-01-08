@@ -7,12 +7,11 @@ import * as Utils from './../utils'
 function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
     bot.command('collections', (ctx) => {
-        ctx.reply("⏳ Loading your collections...")
-
         const username = Utils.removeCmd(ctx.message?.text)
         const rows = 2
 
         if (username != '') {
+            ctx.reply("⏳ Loading your collections...")
             thingiverse.getUserCollections(username)
                 .then(function (collections) {
                     if (collections.length > 0) {
@@ -39,15 +38,16 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
     })
 
     bot.action(/collection (.+)/, async (ctx) => {
-        ctx.reply("⏳ Loading your things...")
+        ctx.reply("⏳ Loading your collection...")
 
         const collectionId = ctx.match[1]
-        const collectionName = (await thingiverse.getCollectionForId(collectionId))?.name || ''
+        const collection = await thingiverse.getCollectionForId(collectionId)
 
         thingiverse.getItemsForCollection(collectionId)
             .then(async function (things) {
                 if (things.length > 0) {
-                    ctx.reply(`📚 Things from "${collectionName}" collection:`)
+                    ctx.reply(`📚 "${collection.name || ''}" collection\n🌐 Web: ${collection.absolute_url}\n🎨 Things:`,
+                        { disable_web_page_preview: true })
 
                     for (const element of things) {
                         await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
