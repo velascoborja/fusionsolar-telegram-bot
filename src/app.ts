@@ -11,6 +11,7 @@ import commandFiles from './commands/files'
 import commandZip from './commands/zip'
 import commandTag from './commands/tag'
 import commandSearch from './commands/search'
+import commandMakes from './commands/makes'
 
 
 dotenv.config()
@@ -27,5 +28,6 @@ commandFiles(bot, thingiverse)
 commandZip(bot, thingiverse)
 commandTag(bot, thingiverse)
 commandSearch(bot, thingiverse)
+commandMakes(bot, thingiverse)
 
 bot.launch()

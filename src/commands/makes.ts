@@ -5,7 +5,7 @@ import * as Utils from '../utils'
 
 const ITEMS_PER_PAGE = 3
 
-function commanMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
     bot.command('makes', (ctx) => {
 
@@ -34,4 +34,4 @@ function commanMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 
 }
 
-export default commanMakes
+export default commandMakes
