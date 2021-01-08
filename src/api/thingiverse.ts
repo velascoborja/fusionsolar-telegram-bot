@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { Collection } from '../models/collection';
 import { File } from '../models/file';
 import { Hits } from '../models/hits';
+import { Make } from '../models/make';
 import { Thing } from '../models/thing';
 import { Zip } from '../models/zip';
 import { get } from './utils';
@@ -55,7 +56,7 @@ class Thingiverse {
         return get(this.api, `search/${search}`)
     }
 
-    getUserMakes(userName: string): Promise<Array<Thing>> {
+    getUserMakes(userName: string): Promise<Array<Make>> {
         return get(this.api, `users/${userName}/copies`)
     }
 }

@@ -15,17 +15,19 @@ function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
             ctx.reply("⏳ Loading your makes...")
 
             thingiverse.getUserMakes(userName)
-                .then(async function (things) {
-                    if (things.length > 0) {
+                .then(async function (makes) {
+                    if (makes.length > 0) {
                         ctx.reply("🖌 These are your makes:")
 
-                        for (const element of things) {
-                            await ctx.replyWithPhoto(element.thumbnail, { caption: thingToMessage(element) })
+                        for (const make of makes) {
+                            await ctx.replyWithPhoto(make.thumbnail, {
+                                caption: `🏷 ${make.thing.name}\n🌐 ${make.public_url}`
+                            })
                         }
 
                         ctx.reply("🏁 That's all!")
                     } else ctx.reply("0️⃣ No makes were found")
-                })
+                })  
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve yout makes 🤷‍♂️")
                 })
