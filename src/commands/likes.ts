@@ -51,7 +51,7 @@ function loadLikes(thingiverse: Thingiverse, ctx: TelegrafContext, userName: str
                     ctx.reply("✅ Those where all your likes")
                 } else {
                     const loadMoreButton = Markup.inlineKeyboard([
-                        [Markup.callbackButton('👍 Yes', `like ${page + 1} ${userName}`)]
+                        [Markup.callbackButton('➕ Load more!', `like ${page + 1} ${userName}`)]
                     ]).extra()
 
                     ctx.reply("🙋 Do you want to load more items?", loadMoreButton)
