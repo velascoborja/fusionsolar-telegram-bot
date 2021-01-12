@@ -34,26 +34,30 @@ function loadSearch(ctx: TelegrafContext, search: string, thingiverse: Thingiver
     thingiverse.searchThings(search)
         .then(async function (result: Hits) {
             if (result.hits.length > 0) {
+
+                /* Retrieve pages */
                 const pages = slice(result.hits, ITEMS_PER_PAGE)
                 const currentPage = pages[pageToLoad]
 
-                if (currentPage == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
+                /* Show things */
+                ctx.reply("🎨 These are the things I've found:")
+                for (const element of currentPage) {
+                    await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
+                }
+
+                /* Show load more button if necessary */
+                if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
                     ctx.reply("✅ That was everything I found")
                 } else {
-                    ctx.reply("🎨 These are the things I've found:")
-
-                    for (const element of currentPage) {
-                        await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
-                    }
-
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `searchMore ${pageToLoad + 1} ${search}`)]
                     ]).extra()
 
                     ctx.reply("🙋 Do you want to load more items?", loadMoreButton)
                 }
-            } else
+            } else {
                 ctx.reply(`0️⃣ Couldn't find anything for ${search}`)
+            }
         })
         .catch(function (error) {
             ctx.reply(`0️⃣ Couldn't find anything for ${search}`)
