@@ -29,21 +29,24 @@ function loadLikes(thingiverse: Thingiverse, ctx: TelegrafContext, userName: str
     thingiverse.getUserLikes(userName)
         .then(async function (things) {
             if (things.length > 0) {
-                const pages = Utils.slice(things, ITEMS_PER_PAGE)
-                const currentPage = pages[pageToLoad]        
 
-                if (currentPage == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
+                /* Retrieve pages */
+                const pages = Utils.slice(things, ITEMS_PER_PAGE)
+                const currentPage = pages[pageToLoad]
+
+                /* Show likes */
+                await ctx.reply("❤️ These are your likes")
+                for (const element of currentPage) {
+                    await ctx.replyWithPhoto(
+                        element.thumbnail, {
+                        caption: thingToMessage(element)
+                    })
+                }
+
+                /* Show load button if necessary */
+                if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
                     ctx.reply("✅ Those where all your likes")
                 } else {
-                    ctx.reply("❤️ These are your likes")
-
-                    for (const element of currentPage) {
-                        await ctx.replyWithPhoto(
-                            element.thumbnail, {
-                            caption: thingToMessage(element)
-                        })
-                    }
-
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `loadMoreLikes ${pageToLoad + 1} ${userName}`)]
                     ]).extra()

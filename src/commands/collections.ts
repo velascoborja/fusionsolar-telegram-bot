@@ -64,27 +64,27 @@ function loadCollectionItems(thingiverse: Thingiverse, ctx: TelegrafContext, col
         .then(async function (things) {
             if (things.length > 0) {
 
+                /* Retrieve pages */
                 const pages = Utils.slice(things, ITEMS_PER_PAGE)
                 const currentPage = pages[pageToLoad]
 
-                if (currentPage == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
+                /* Show things */
+                await ctx.reply(`📚 "${collection.name || ''}" collection\n🌐 Web: ${collection.absolute_url}`, { disable_web_page_preview: true })
+                await ctx.reply("🎨 Things:")
+                for (const element of currentPage) {
+                    await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
+                }
+
+                /* Show load more button if needed */
+                if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
                     ctx.reply("✅ No more items in collection")
                 } else {
-                    ctx.reply(`📚 "${collection.name || ''}" collection\n🌐 Web: ${collection.absolute_url}`,
-                        { disable_web_page_preview: true })
-                    ctx.reply("🎨 Things:")
-
-                    for (const element of currentPage) {
-                        await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
-                    }
-
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `loadMoreItems ${pageToLoad + 1} ${collection.id}`)]
                     ]).extra()
 
                     ctx.reply("🙋 Do you want to load more items?", loadMoreButton)
                 }
-
             } else ctx.reply("0️⃣ No items were found")
         })
         .catch(function (error) {

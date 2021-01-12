@@ -39,7 +39,7 @@ function loadTagThings(ctx: TelegrafContext, tag: string, thingiverse: Thingiver
                 const currentPage = pages[pageToLoad]
 
                 /* Show things */
-                ctx.reply("🏷 These are the things I've found:")
+                await ctx.reply("🏷 These are the things I've found:")
                 for (const element of currentPage) {
                     await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
                 }

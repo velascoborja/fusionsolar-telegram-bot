@@ -30,20 +30,22 @@ function loadMakes(thingiverse: Thingiverse, userName: string, ctx: TelegrafCont
     thingiverse.getUserMakes(userName)
         .then(async function (makes) {
             if (makes.length > 0) {
+
+                /* Retrieve pages */
                 const pages = Utils.slice(makes, ITEMS_PER_PAGE)
                 const currentPage = pages[pageToLoad]
 
-                if (currentPage == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
+                /* Show makes */
+                await ctx.reply("🖌 These are your makes:")
+                for (const make of currentPage) {
+                    await ctx.replyWithPhoto(make.thumbnail, {
+                        caption: `🏷 ${make.thing.name}\n🌐 ${make.public_url}`
+                    })
+                }
+
+                if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
                     ctx.reply("✅ Those where all your makes")
                 } else {
-                    ctx.reply("🖌 These are your makes:")
-
-                    for (const make of currentPage) {
-                        await ctx.replyWithPhoto(make.thumbnail, {
-                            caption: `🏷 ${make.thing.name}\n🌐 ${make.public_url}`
-                        })
-                    }
-
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `loadMoreMakes ${pageToLoad + 1} ${userName}`)]
                     ]).extra()
