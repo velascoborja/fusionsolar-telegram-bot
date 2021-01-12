@@ -9,25 +9,29 @@ function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse) {
     bot.command('tag', function (ctx: TelegrafContext) {
         const tag = removeCmd(ctx.message.text).split(" ")[0]
 
-        ctx.reply(`🔎 Searching things with tag "${tag}"...`)
+        if (tag != "") {
+            ctx.reply(`🔎 Searching things with tag "${tag}"...`)
 
-        thingiverse.searchThingsByTag(tag)
-            .then(async function (things: Array<Thing>) {
-                if (things.length > 0) {
-                    ctx.reply("🏷 These are the things I've found:")
+            thingiverse.searchThingsByTag(tag)
+                .then(async function (things: Array<Thing>) {
+                    if (things.length > 0) {
+                        ctx.reply("🏷 These are the things I've found:")
 
-                    for (let index = 0; index < 5; index++) {
-                        const element = things[index];
+                        for (let index = 0; index < 5; index++) {
+                            const element = things[index];
 
-                        await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
-                    }
+                            await ctx.replyWithPhoto(element.preview_image, { caption: thingToMessage(element) })
+                        }
 
-                    ctx.reply("🏁 That's all!")
-                } else ctx.reply(`0️⃣ Couldn't find anything for tag ${tag}`)
-            })
-            .catch(function (error) {
-                ctx.reply(`0️⃣ Couldn't find anything for tag ${tag}`)
-            })
+                        ctx.reply("🏁 That's all!")
+                    } else ctx.reply(`0️⃣ Couldn't find anything for tag ${tag}`)
+                })
+                .catch(function (error) {
+                    ctx.reply(`0️⃣ Couldn't find anything for tag ${tag}`)
+                })
+        } else {
+            ctx.reply(`🚨 No tag was specified`)
+        }
     })
 }
 
