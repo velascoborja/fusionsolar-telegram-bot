@@ -1,9 +1,9 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
-import { ITEMS_PER_PAGE } from "../const"
-import { thingToMessage } from "../messages"
-import * as Utils from './../utils'
+import Thingiverse from "../datasource/api/thingiverse"
+import { ITEMS_PER_PAGE } from "./const"
+import { thingToMessage } from "./messages"
+import * as Utils from './utils'
 
 function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
 

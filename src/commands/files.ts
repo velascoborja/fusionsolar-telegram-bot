@@ -1,5 +1,5 @@
 import { Telegraf } from "telegraf"
-import Thingiverse from "../api/thingiverse"
+import Thingiverse from "../datasource/api/thingiverse"
 
 function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse) {
     bot.hears(/\/dl_(.+)/, (ctx) => {
