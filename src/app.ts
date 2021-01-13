@@ -13,6 +13,7 @@ import commandTag from './commands/tag'
 import commandSearch from './commands/search'
 import commandMakes from './commands/makes'
 import DatabaseDataSource from './datasource/db/DatabaseDataSource'
+import commandUsername from './commands/username'
 
 dotenv.config()
 
@@ -40,6 +41,7 @@ function initTelegraf(dataBase: DatabaseDataSource) {
     commandTag(bot, thingiverse)
     commandSearch(bot, thingiverse)
     commandMakes(bot, thingiverse)
+    commandUsername(bot, dataBase)
     
     bot.launch()
 }

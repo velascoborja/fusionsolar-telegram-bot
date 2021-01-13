@@ -16,6 +16,8 @@ class DatabaseDataSource {
                 .then(function (client) {
                     const db = client.db(dbName)
                     database.usersCollection = db.collection("users")
+                    database.usersCollection.createIndex({ "id": 1 }, { unique: true })
+
                     resolve(database)
                 })
                 .catch(function (error) {
@@ -24,11 +26,11 @@ class DatabaseDataSource {
         })
     }
 
-    insertUser(user: User): Promise<boolean> {
+    insertOrUpdateUser(user: User): Promise<boolean> {
         const dataBase = this
 
         return new Promise(function (resolve, reject) {
-            dataBase.usersCollection.insertOne(user)
+            dataBase.usersCollection.updateOne({ id: user.id }, { $set: user }, { upsert: true })
                 .then(function (result) {
                     resolve(true)
                 })
@@ -44,7 +46,7 @@ class DatabaseDataSource {
         return new Promise(function (resolve, reject) {
             dataBase.usersCollection.findOne({ userId: userId })
                 .then(function (result) {
-                    resolve(new User(result.userId, result.userName))
+                    resolve(new User(result.userId, result.userName, result.thingiverseUsername))
                 })
                 .catch(function (error) {
                     reject(error)
