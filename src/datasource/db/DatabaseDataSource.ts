@@ -44,9 +44,9 @@ class DatabaseDataSource {
         const dataBase = this
 
         return new Promise(function (resolve, reject) {
-            dataBase.usersCollection.findOne({ userId: userId })
-                .then(function (result) {
-                    resolve(new User(result.userId, result.userName, result.thingiverseUsername))
+            dataBase.usersCollection.findOne({ id: userId })
+                .then(function (result: User) {
+                    resolve(new User(result.id, result.userName, result.thingiverseUsername))
                 })
                 .catch(function (error) {
                     reject(error)

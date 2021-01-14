@@ -34,7 +34,7 @@ function initTelegraf(dataBase: DatabaseDataSource) {
     commandStart(bot)
     commandHelp(bot)
     commandLikes(bot, thingiverse)
-    commandCollections(bot, thingiverse)
+    commandCollections(bot, thingiverse, dataBase)
     commandDesigns(bot, thingiverse)
     commandFiles(bot, thingiverse)
     commandZip(bot, thingiverse)

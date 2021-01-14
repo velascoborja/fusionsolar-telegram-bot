@@ -2,19 +2,30 @@ import { Extra, Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import Thingiverse from "../datasource/api/thingiverse"
 import { ITEMS_PER_PAGE } from "./const"
-import { thingToMessage } from "./messages"
+import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import { Collection } from "../models/collection"
 import * as Utils from './utils'
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import { User } from "../models/user"
 
-function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
 
-    bot.command('collections', (ctx) => {
-        const username = Utils.removeCmd(ctx.message?.text)
+    bot.command('collections', async (ctx: TelegrafContext) => {
+        const commandUsername = Utils.removeCmd(ctx.message?.text)
+        let defaultUsername: string = undefined
+
+        await db.getUserById(ctx.message?.from?.id.toString())
+            .then(function (user: User) {
+                defaultUsername = user.thingiverseUsername
+            })
+
+        const username = commandUsername != "" ? commandUsername : defaultUsername
+
         const rows = 3
 
         if (username != '') {
             ctx.reply("⏳ Loading your collections...")
-            thingiverse.getUserCollections(username)
+            thingiverse.getUserCollections(commandUsername)
                 .then(function (collections) {
                     if (collections.length > 0) {
                         const collectionArrays = []
@@ -36,7 +47,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve your collections 🤷‍♂️")
                 })
-        } else ctx.reply("Username was not specified 🤭")
+        } else sendDefaultUsernameNotProvidedMessage(ctx)
     })
 
     bot.action(/collection (.+)/, async (ctx) => {
