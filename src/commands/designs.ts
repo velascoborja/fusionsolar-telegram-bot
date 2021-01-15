@@ -1,28 +1,28 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import Thingiverse from "../datasource/api/thingiverse"
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { ITEMS_PER_PAGE } from "./const"
-import { thingToMessage } from "./messages"
+import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import * as Utils from "./utils"
 
-function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse) {
-    bot.command("designs", (ctx) => {
-
+function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
+    bot.command("designs", async (ctx) => {
         ctx.reply("⏳ Retrieving designs...")
 
-        const username = Utils.removeCmd(ctx.message.text)
+        const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
 
         if (username != '') {
             loadDesigns(thingiverse, username, ctx, 0)
-        } else ctx.reply("Username was not specified 🤭")
+        } else sendDefaultUsernameNotProvidedMessage(ctx)
     })
 
-    bot.action(/loadMoreDesigns (.+)/, (ctx: TelegrafContext) => {
+    bot.action(/loadMoreDesigns (.+)/, async (ctx: TelegrafContext) => {
         const args = ctx.match[1]
         const pageToLoad = Number(args.split(" ")[0])
-        const userName = args.split(" ")[1]
+        const username = args.split(" ")[1]
 
-        loadDesigns(thingiverse, userName, ctx, pageToLoad)
+        loadDesigns(thingiverse, username, ctx, pageToLoad)
     })
 }
 

@@ -8,30 +8,22 @@ import * as Utils from './utils'
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { User } from "../models/user"
 
+const ROW_COUNT = 3
+
 function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
 
     bot.command('collections', async (ctx: TelegrafContext) => {
-        const commandUsername = Utils.removeCmd(ctx.message?.text)
-        let defaultUsername: string = undefined
-
-        await db.getUserById(ctx.message?.from?.id.toString())
-            .then(function (user: User) {
-                defaultUsername = user.thingiverseUsername
-            })
-
-        const username = commandUsername != "" ? commandUsername : defaultUsername
-
-        const rows = 3
+        const username = await Utils.getUsername(db, ctx.message?.text, ctx.message?.from?.id.toString())
 
         if (username != '') {
             ctx.reply("⏳ Loading your collections...")
-            thingiverse.getUserCollections(commandUsername)
+            thingiverse.getUserCollections(username)
                 .then(function (collections) {
                     if (collections.length > 0) {
                         const collectionArrays = []
 
-                        for (var i = 0; i < collections.length; i += rows) {
-                            collectionArrays.push(collections.slice(i, i + rows));
+                        for (var i = 0; i < collections.length; i += ROW_COUNT) {
+                            collectionArrays.push(collections.slice(i, i + ROW_COUNT));
                         }
 
                         const collectionsKeyboard = Markup.inlineKeyboard(collectionArrays.map(it =>

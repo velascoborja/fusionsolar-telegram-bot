@@ -1,4 +1,5 @@
 import { Console } from 'console'
+import { Resolver } from 'dns'
 import { Collection, Db, MongoClient } from 'mongodb'
 import { resolve } from 'path'
 import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
@@ -46,10 +47,28 @@ class DatabaseDataSource {
         return new Promise(function (resolve, reject) {
             dataBase.usersCollection.findOne({ id: userId })
                 .then(function (result: User) {
-                    resolve(new User(result.id, result.userName, result.thingiverseUsername))
+                    if (result != null) {
+                        resolve(new User(result.id, result.userName, result.thingiverseUsername))
+                    } else {
+                        reject(Error("No user found"))
+                    }
                 })
                 .catch(function (error) {
                     reject(error)
+                })
+        })
+    }
+
+    getUserThingiverseUsername(userId: string): Promise<string> {
+        const dataBase = this
+
+        return new Promise(function (resolve, reject) {
+            dataBase.usersCollection.findOne({ id: userId })
+                .then(function (result: User) {
+                    resolve(result?.thingiverseUsername || '')
+                })
+                .catch(function (error) {
+                    resolve('')
                 })
         })
     }
