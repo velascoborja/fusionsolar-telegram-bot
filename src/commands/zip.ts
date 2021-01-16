@@ -5,11 +5,11 @@ import Thingiverse from "../datasource/api/thingiverse"
 import { Zip } from "../models/zip"
 
 function commandZip(bot: Telegraf<any>, thingiverse: Thingiverse) {
-    bot.hears(/\/zip_(.+)/, (ctx) => {
+    bot.hears(/\/zip_(.+)/, async (ctx) => {
 
         const thingId = ctx.match[1]
-        ctx.reply("📦 Here's your zip:")
-        ctx.replyWithDocument(`https://www.thingiverse.com/thing:${thingId}/zip`)
+        await ctx.reply("📦 Here's your zip:")
+        await ctx.replyWithDocument(`https://www.thingiverse.com/thing:${thingId}/zip`)
             .catch(function (error) {
 
                 /* If ZIP fails try to retrieve package URL and if it keeps failing, just send the URL */
