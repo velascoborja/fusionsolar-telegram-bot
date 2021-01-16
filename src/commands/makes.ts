@@ -1,21 +1,21 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
-import { ITEMS_PER_PAGE } from "../const"
-import { thingToMessage } from "../messages"
-import * as Utils from '../utils'
+import Thingiverse from "../datasource/api/thingiverse"
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import { ITEMS_PER_PAGE } from "./const"
+import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
+import * as Utils from './utils'
 
-function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
 
-    bot.command('makes', (ctx) => {
+    bot.command('makes', async (ctx) => {
 
-        const userName = Utils.removeCmd(ctx.message?.text)
-
-        if (userName != '') {
+        const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
+        if (username != '') {
             ctx.reply("⏳ Loading your makes...")
 
-            loadMakes(thingiverse, userName, ctx, 0)
-        } else ctx.reply("Username was not specified 🤭")
+            loadMakes(thingiverse, username, ctx, 0)
+        } else sendDefaultUsernameNotProvidedMessage(ctx)
     })
 
     bot.action(/loadMoreMakes (.+)/, (ctx: TelegrafContext) => {

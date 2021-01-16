@@ -1,7 +1,7 @@
 import { rejects } from "assert"
 import { Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
+import Thingiverse from "../datasource/api/thingiverse"
 import { Zip } from "../models/zip"
 
 function commandZip(bot: Telegraf<any>, thingiverse: Thingiverse) {

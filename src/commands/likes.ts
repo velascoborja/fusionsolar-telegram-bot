@@ -1,18 +1,19 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
-import { ITEMS_PER_PAGE } from "../const"
-import { thingToMessage } from "../messages"
-import * as Utils from './../utils'
+import Thingiverse from "../datasource/api/thingiverse"
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import { ITEMS_PER_PAGE } from "./const"
+import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
+import * as Utils from './utils'
 
-function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
 
-    bot.command('likes', (ctx) => {
-        const userName = Utils.removeCmd(ctx.message?.text)
+    bot.command('likes', async (ctx) => {
+        const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
 
-        if (userName != '') {
-            loadLikes(thingiverse, ctx, userName, 0)
-        } else ctx.reply("Username was not specified 🤭")
+        if (username != '') {
+            loadLikes(thingiverse, ctx, username, 0)
+        } else sendDefaultUsernameNotProvidedMessage(ctx)
     })
 
     bot.action(/loadMoreLikes (.+)/, (ctx: TelegrafContext) => {

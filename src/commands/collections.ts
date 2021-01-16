@@ -1,16 +1,19 @@
 import { Extra, Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
-import { ITEMS_PER_PAGE } from "../const"
-import { thingToMessage } from "../messages"
+import Thingiverse from "../datasource/api/thingiverse"
+import { ITEMS_PER_PAGE } from "./const"
+import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import { Collection } from "../models/collection"
-import * as Utils from './../utils'
+import * as Utils from './utils'
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import { User } from "../models/user"
 
-function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
+const ROW_COUNT = 3
 
-    bot.command('collections', (ctx) => {
-        const username = Utils.removeCmd(ctx.message?.text)
-        const rows = 3
+function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
+
+    bot.command('collections', async (ctx: TelegrafContext) => {
+        const username = await Utils.getUsername(db, ctx.message?.text, ctx.message?.from?.id.toString())
 
         if (username != '') {
             ctx.reply("⏳ Loading your collections...")
@@ -19,8 +22,8 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                     if (collections.length > 0) {
                         const collectionArrays = []
 
-                        for (var i = 0; i < collections.length; i += rows) {
-                            collectionArrays.push(collections.slice(i, i + rows));
+                        for (var i = 0; i < collections.length; i += ROW_COUNT) {
+                            collectionArrays.push(collections.slice(i, i + ROW_COUNT));
                         }
 
                         const collectionsKeyboard = Markup.inlineKeyboard(collectionArrays.map(it =>
@@ -36,7 +39,7 @@ function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse) {
                 .catch(function (error) {
                     ctx.reply("Couldn't retrieve your collections 🤷‍♂️")
                 })
-        } else ctx.reply("Username was not specified 🤭")
+        } else sendDefaultUsernameNotProvidedMessage(ctx)
     })
 
     bot.action(/collection (.+)/, async (ctx) => {

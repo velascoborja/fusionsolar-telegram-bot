@@ -1,10 +1,10 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../api/thingiverse"
-import { ITEMS_PER_PAGE } from "../const"
-import { thingToMessage } from "../messages"
+import Thingiverse from "../datasource/api/thingiverse"
+import { ITEMS_PER_PAGE } from "./const"
+import { thingToMessage } from "./messages"
 import { Thing } from "../models/thing"
-import { removeCmd, slice } from "../utils"
+import { removeCmd, slice } from "./utils"
 
 function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse) {
     bot.command('tag', function (ctx: TelegrafContext) {

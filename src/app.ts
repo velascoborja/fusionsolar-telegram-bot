@@ -1,6 +1,6 @@
 import { Telegraf, Markup } from 'telegraf'
 import * as dotenv from 'dotenv'
-import Thingiverse from './api/thingiverse'
+import Thingiverse from './datasource/api/thingiverse'
 
 import commandLikes from './commands/likes'
 import commandCollections from './commands/collections'
@@ -12,22 +12,36 @@ import commandZip from './commands/zip'
 import commandTag from './commands/tag'
 import commandSearch from './commands/search'
 import commandMakes from './commands/makes'
-
+import DatabaseDataSource from './datasource/db/DatabaseDataSource'
+import commandUsername from './commands/username'
 
 dotenv.config()
 
-const bot = new Telegraf(process.env.BOT_TOKEN || '')
-const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
+new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot')
+    .then(function (databaseDataSource) {
+        console.log("MongoDb started successfully")
+        initTelegraf(databaseDataSource)
+    })
+    .catch(function (err) {
+        console.log("Couldn't start MongoDb")
+    })
 
-commandStart(bot)
-commandHelp(bot)
-commandLikes(bot, thingiverse)
-commandCollections(bot, thingiverse)
-commandDesigns(bot, thingiverse)
-commandFiles(bot, thingiverse)
-commandZip(bot, thingiverse)
-commandTag(bot, thingiverse)
-commandSearch(bot, thingiverse)
-commandMakes(bot, thingiverse)
+function initTelegraf(dataBase: DatabaseDataSource) {
 
-bot.launch()
+    const bot = new Telegraf(process.env.BOT_TOKEN || '')
+    const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
+    
+    commandStart(bot)
+    commandHelp(bot)
+    commandLikes(bot, thingiverse, dataBase)
+    commandCollections(bot, thingiverse, dataBase)
+    commandDesigns(bot, thingiverse, dataBase)
+    commandFiles(bot, thingiverse)
+    commandZip(bot, thingiverse)
+    commandTag(bot, thingiverse)
+    commandSearch(bot, thingiverse)
+    commandMakes(bot, thingiverse, dataBase)
+    commandUsername(bot, dataBase)
+    
+    bot.launch()
+}
