@@ -1,9 +1,9 @@
 import { Telegraf } from "telegraf"
-import { Analytics, AnalyticsEvent } from "../analytics/analytics"
+import { EventHelper, Event } from "../analytics/analytics"
 
-function commandHelp(bot: Telegraf<any>, analytics: Analytics) {
+function commandHelp(bot: Telegraf<any>, analytics: EventHelper) {
     bot.help((ctx) => {
-        analytics.logEvent(AnalyticsEvent.COMMAND_HELP)
+        analytics.logEvent(Event.COMMAND_HELP)
         ctx.reply("🧐 To get to know what this bot can do for you type / to check all the available commands.")
     })
 }

@@ -1,16 +1,16 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import { Analytics, AnalyticsEvent } from "../analytics/analytics"
+import { EventHelper, Event } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import * as Utils from "./utils"
 
-function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: Analytics) {
+function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
     
     bot.command("designs", async (ctx) => {
-        analytics.logEvent(AnalyticsEvent.COMMAND_DESIGNS)
+        analytics.logEvent(Event.COMMAND_DESIGNS)
         
         ctx.reply("⏳ Retrieving designs...")
 

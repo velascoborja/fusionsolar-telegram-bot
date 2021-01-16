@@ -1,11 +1,11 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import { Analytics, AnalyticsEvent } from "../analytics/analytics"
+import { EventHelper, Event } from "../analytics/analytics"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { User } from "../models/user"
 import { getSetUsernameMessage } from "./messages"
 
-function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analytics: Analytics) {
+function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analytics: EventHelper) {
 
     bot.action("setUserName", (ctx: TelegrafContext) => {
         initSetUserNameProcess(ctx, analytics)
@@ -38,8 +38,8 @@ function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analy
     })
 }
 
-function initSetUserNameProcess(ctx: TelegrafContext, analytics: Analytics) {
-    analytics.logEvent(AnalyticsEvent.COMMAND_USERNAME)
+function initSetUserNameProcess(ctx: TelegrafContext, analytics: EventHelper) {
+    analytics.logEvent(Event.COMMAND_USERNAME)
     
     ctx.reply(getSetUsernameMessage(), Markup.forceReply().extra())
 }

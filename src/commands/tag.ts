@@ -5,11 +5,11 @@ import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Thing } from "../models/thing"
 import { removeCmd, slice } from "./utils"
-import { Analytics, AnalyticsEvent } from "../analytics/analytics"
+import { EventHelper, Event } from "../analytics/analytics"
 
-function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: Analytics) {
+function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('tag', function (ctx: TelegrafContext) {
-        analytics.logEvent(AnalyticsEvent.COMMAND_TAGS)
+        analytics.logEvent(Event.COMMAND_TAGS)
 
         const tag = removeCmd(ctx.message.text).split(" ")[0]
 

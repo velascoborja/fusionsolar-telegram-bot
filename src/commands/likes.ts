@@ -1,16 +1,16 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import { Analytics, AnalyticsEvent } from "../analytics/analytics"
+import { EventHelper, Event } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import * as Utils from './utils'
 
-function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: Analytics) {
+function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
 
     bot.command('likes', async (ctx) => {
-        analytics.logEvent(AnalyticsEvent.COMMAND_LIKES)
+        analytics.logEvent(Event.COMMAND_LIKES)
         const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
 
         if (username != '') {

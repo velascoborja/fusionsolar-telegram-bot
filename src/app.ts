@@ -2,8 +2,6 @@ import { Telegraf, Markup } from 'telegraf'
 import * as dotenv from 'dotenv'
 import Thingiverse from './datasource/api/thingiverse'
 
-import * as firebase from "firebase/app"
-import * as analytics from 'firebase/analytics'
 
 import commandLikes from './commands/likes'
 import commandCollections from './commands/collections'
@@ -17,21 +15,21 @@ import commandSearch from './commands/search'
 import commandMakes from './commands/makes'
 import DatabaseDataSource from './datasource/db/DatabaseDataSource'
 import commandUsername from './commands/username'
-import { Analytics, AnalyticsEvent } from './analytics/analytics'
+import { EventHelper, Event } from './analytics/analytics'
 
 dotenv.config()
 
 new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot')
     .then(function (databaseDataSource) {
         console.log("MongoDb started successfully")
-        const analytics = initFirebase()
+        const analytics = initAnalytics()
         initTelegraf(databaseDataSource, analytics)
     })
     .catch(function (err) {
         console.log("Couldn't start MongoDb")
     })
 
-function initTelegraf(dataBase: DatabaseDataSource, analytics: Analytics) {
+function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
 
     const bot = new Telegraf(process.env.BOT_TOKEN || '')
     const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
@@ -51,10 +49,8 @@ function initTelegraf(dataBase: DatabaseDataSource, analytics: Analytics) {
     bot.launch()
 }
 
-function initFirebase(): Analytics {
-    const firebaseConfig = process.env.FIREBASE_CONFIG
-    firebase.default.initializeApp(firebaseConfig)
-    const analytics = new Analytics()
-    analytics.logEvent(AnalyticsEvent.APP_START)
-    return analytics
+function initAnalytics(): EventHelper {
+    const eventHelper = new EventHelper()
+    eventHelper.logEvent(Event.APP_START)
+    return eventHelper
 }
