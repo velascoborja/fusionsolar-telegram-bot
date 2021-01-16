@@ -1,15 +1,20 @@
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+
 export class EventHelper {
     client: any
+    db: DatabaseDataSource
 
-    constructor() {
+    constructor(db : DatabaseDataSource) {
         const Analytics = require('analytics-node')
         this.client = new Analytics(process.env.SEGMENT_API_KEY)
+        this.db = db
     }
 
     logEvent(event: Event) {
         try {
             this.client.track({
-                event: event
+                event: event,
+                userId: "test"
             })
         } catch (error) {
             console.log(error)

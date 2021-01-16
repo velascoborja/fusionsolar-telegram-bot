@@ -22,7 +22,7 @@ dotenv.config()
 new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot')
     .then(function (databaseDataSource) {
         console.log("MongoDb started successfully")
-        const analytics = initAnalytics()
+        const analytics = initAnalytics(databaseDataSource)
         initTelegraf(databaseDataSource, analytics)
     })
     .catch(function (err) {
@@ -49,8 +49,8 @@ function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
     bot.launch()
 }
 
-function initAnalytics(): EventHelper {
-    const eventHelper = new EventHelper()
+function initAnalytics(db : DatabaseDataSource): EventHelper {
+    const eventHelper = new EventHelper(db)
     eventHelper.logEvent(Event.APP_START)
     return eventHelper
 }
