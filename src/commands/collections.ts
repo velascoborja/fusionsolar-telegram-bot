@@ -7,12 +7,14 @@ import { Collection } from "../models/collection"
 import * as Utils from './utils'
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { User } from "../models/user"
+import { Analytics, AnalyticsEvent } from "../analytics/analytics"
 
 const ROW_COUNT = 3
 
-function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource) {
-
+function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: Analytics) {
     bot.command('collections', async (ctx: TelegrafContext) => {
+        analytics.logEvent(AnalyticsEvent.COMMAND_COLLECTIONS)
+        
         const username = await Utils.getUsername(db, ctx.message?.text, ctx.message?.from?.id.toString())
 
         if (username != '') {

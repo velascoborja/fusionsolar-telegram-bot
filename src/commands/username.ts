@@ -1,17 +1,18 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
+import { Analytics, AnalyticsEvent } from "../analytics/analytics"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { User } from "../models/user"
 import { getSetUsernameMessage } from "./messages"
 
-function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource) {
+function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analytics: Analytics) {
 
     bot.action("setUserName", (ctx: TelegrafContext) => {
-        initSetUserNameProcess(ctx)
+        initSetUserNameProcess(ctx, analytics)
     })
 
     bot.command("username", function (ctx: TelegrafContext) {
-        initSetUserNameProcess(ctx)
+        initSetUserNameProcess(ctx, analytics)
     })
 
     bot.on("message", function (ctx: TelegrafContext) {
@@ -31,11 +32,15 @@ function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource) {
                     ctx.reply("❌ Couldn't set your username")
                 })
             }
+        } else {
+            ctx.reply("🙀 I can't understand what you're trying to tell me. Maybe you could try to type / and take a look to all available commands")
         }
     })
 }
 
-function initSetUserNameProcess(ctx: TelegrafContext) {
+function initSetUserNameProcess(ctx: TelegrafContext, analytics: Analytics) {
+    analytics.logEvent(AnalyticsEvent.COMMAND_USERNAME)
+    
     ctx.reply(getSetUsernameMessage(), Markup.forceReply().extra())
 }
 

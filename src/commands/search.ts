@@ -6,9 +6,13 @@ import { thingToMessage } from "./messages"
 import { Hits } from "../models/hits"
 import { Thing } from "../models/thing"
 import { removeCmd, slice } from "./utils"
+import { Analytics, AnalyticsEvent } from "../analytics/analytics"
 
-function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: Analytics) {
     bot.command('search', function (ctx: TelegrafContext) {
+
+        analytics.logEvent(AnalyticsEvent.COMMAND_SEARCH)
+
         const search = removeCmd(ctx.message.text)
 
         if (search != "") {

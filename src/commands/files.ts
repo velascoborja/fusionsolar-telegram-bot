@@ -1,8 +1,12 @@
 import { Telegraf } from "telegraf"
+import { Analytics, AnalyticsEvent } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
 
-function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse) {
+function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: Analytics) {
+
     bot.hears(/\/dl_(.+)/, (ctx) => {
+        analytics.logEvent(AnalyticsEvent.COMMAND_FILES)
+
         ctx.reply("⏳ Retrieving files...")
 
         const thingId = ctx.match[1]
