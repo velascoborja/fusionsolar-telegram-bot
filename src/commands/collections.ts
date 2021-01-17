@@ -13,8 +13,8 @@ const ROW_COUNT = 3
 
 function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
     bot.command('collections', async (ctx: TelegrafContext) => {
-        analytics.logEvent(Event.COMMAND_COLLECTIONS)
-        
+        analytics.logEvent(Event.COMMAND_COLLECTIONS, Utils.getUserId(ctx))
+
         const username = await Utils.getUsername(db, ctx.message?.text, ctx.message?.from?.id.toString())
 
         if (username != '') {

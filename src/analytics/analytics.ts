@@ -10,12 +10,9 @@ export class EventHelper {
         this.db = db
     }
 
-    logEvent(event: Event) {
+    logEvent(event: Event, userId? : string) {
         try {
-            this.client.track({
-                event: event,
-                userId: "test"
-            })
+            this.db.trackEvent(event, userId)
         } catch (error) {
             console.log(error)
         }

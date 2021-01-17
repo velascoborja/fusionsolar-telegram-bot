@@ -2,7 +2,6 @@ import { Telegraf, Markup } from 'telegraf'
 import * as dotenv from 'dotenv'
 import Thingiverse from './datasource/api/thingiverse'
 
-
 import commandLikes from './commands/likes'
 import commandCollections from './commands/collections'
 import commandStart from './commands/start'
@@ -21,12 +20,12 @@ dotenv.config()
 
 new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot')
     .then(function (databaseDataSource) {
-        console.log("MongoDb started successfully")
         const analytics = initAnalytics(databaseDataSource)
         initTelegraf(databaseDataSource, analytics)
+        console.log("Bot started successfully")
     })
     .catch(function (err) {
-        console.log("Couldn't start MongoDb")
+        console.log("Error starting bot")
     })
 
 function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {

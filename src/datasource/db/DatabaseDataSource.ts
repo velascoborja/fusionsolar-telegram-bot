@@ -3,21 +3,28 @@ import { Resolver } from 'dns'
 import { Collection, Db, MongoClient } from 'mongodb'
 import { resolve } from 'path'
 import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
+import { Event } from '../../analytics/analytics'
 import { User } from '../../models/user'
 
 class DatabaseDataSource {
 
     private usersCollection: Collection
+    private eventsCollection: Collection
 
     init(url: string, dbName: string): Promise<DatabaseDataSource> {
         const database = this
 
         return new Promise(function (resolve, reject) {
-            MongoClient.connect(url)
+            const options = { useUnifiedTopology: true }
+
+            MongoClient.connect(url, options)
                 .then(function (client) {
                     const db = client.db(dbName)
+
                     database.usersCollection = db.collection("users")
                     database.usersCollection.createIndex({ "id": 1 }, { unique: true })
+
+                    database.eventsCollection = db.collection("events")
 
                     resolve(database)
                 })
@@ -25,6 +32,14 @@ class DatabaseDataSource {
                     reject(error)
                 })
         })
+    }
+
+    trackEvent(event: Event, userId?: string) {
+        try {
+            this.eventsCollection.insertOne({ event: event, userId: userId })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     insertOrUpdateUser(user: User): Promise<boolean> {
@@ -48,7 +63,7 @@ class DatabaseDataSource {
             dataBase.usersCollection.findOne({ id: userId })
                 .then(function (result: User) {
                     if (result != null) {
-                        resolve(new User(result.id, result.userName, result.thingiverseUsername))
+                        resolve(new User(result.id, result.userName, result.thingiverseUsername, result.languageCode, result.name, result.name))
                     } else {
                         reject(Error("No user found"))
                     }

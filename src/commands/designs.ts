@@ -10,7 +10,7 @@ import * as Utils from "./utils"
 function commandDesigns(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
     
     bot.command("designs", async (ctx) => {
-        analytics.logEvent(Event.COMMAND_DESIGNS)
+        analytics.logEvent(Event.COMMAND_DESIGNS,  Utils.getUserId(ctx))
         
         ctx.reply("⏳ Retrieving designs...")
 

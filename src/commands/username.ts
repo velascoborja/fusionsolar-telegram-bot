@@ -4,6 +4,7 @@ import { EventHelper, Event } from "../analytics/analytics"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { User } from "../models/user"
 import { getSetUsernameMessage } from "./messages"
+import { getUserId } from "./utils"
 
 function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analytics: EventHelper) {
 
@@ -18,19 +19,22 @@ function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analy
     bot.on("message", function (ctx: TelegrafContext) {
         if (ctx.message.reply_to_message != undefined && ctx.message.reply_to_message.text == getSetUsernameMessage()) {
             const thingiverseUsername = ctx.message.text
-            const username = ctx.message.from.username || ""
+            const username = ctx.from.username || ""
+            const lastName = ctx.from.last_name || ""
+            const name = ctx.from.first_name || ""
+            const languageCode = ctx.from.language_code || ""
             const userId = ctx.message.from.id.toString()
 
             if (thingiverseUsername == undefined || thingiverseUsername == "") {
                 ctx.reply("📭 Username cannot be empty")
             } else {
-                database.insertOrUpdateUser(new User(userId, username, thingiverseUsername))
-                .then(function (result) {
-                    ctx.reply(`✅ Username "${thingiverseUsername}" was correctly saved.\n\nFrom now on you can execute commands without specifing a username and the one you just set will be used`)
-                })
-                .catch(function (error) {
-                    ctx.reply("❌ Couldn't set your username")
-                })
+                database.insertOrUpdateUser(new User(userId, username, thingiverseUsername, languageCode, name, lastName))
+                    .then(function (result) {
+                        ctx.reply(`✅ Username "${thingiverseUsername}" was correctly saved.\n\nFrom now on you can execute commands without specifing a username and the one you just set will be used`)
+                    })
+                    .catch(function (error) {
+                        ctx.reply("❌ Couldn't set your username")
+                    })
             }
         } else {
             ctx.reply("🙀 I can't understand what you're trying to tell me. Maybe you could try to type / and take a look to all available commands")
@@ -39,8 +43,8 @@ function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analy
 }
 
 function initSetUserNameProcess(ctx: TelegrafContext, analytics: EventHelper) {
-    analytics.logEvent(Event.COMMAND_USERNAME)
-    
+    analytics.logEvent(Event.COMMAND_USERNAME, getUserId(ctx))
+
     ctx.reply(getSetUsernameMessage(), Markup.forceReply().extra())
 }
 

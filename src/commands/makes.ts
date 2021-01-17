@@ -10,7 +10,7 @@ import * as Utils from './utils'
 function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
 
     bot.command('makes', async (ctx) => {
-        analytics.logEvent(Event.COMMAND_MAKES)
+        analytics.logEvent(Event.COMMAND_MAKES, Utils.getUserId(ctx))
         const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
         
         if (username != '') {

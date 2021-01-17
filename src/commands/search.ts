@@ -5,13 +5,13 @@ import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Hits } from "../models/hits"
 import { Thing } from "../models/thing"
-import { removeCmd, slice } from "./utils"
+import { getUserId, removeCmd, slice } from "./utils"
 import { EventHelper, Event } from "../analytics/analytics"
 
 function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('search', function (ctx: TelegrafContext) {
 
-        analytics.logEvent(Event.COMMAND_SEARCH)
+        analytics.logEvent(Event.COMMAND_SEARCH, getUserId(ctx))
 
         const search = removeCmd(ctx.message.text)
 

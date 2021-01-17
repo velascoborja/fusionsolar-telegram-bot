@@ -1,11 +1,12 @@
 import { Telegraf } from "telegraf"
 import { EventHelper, Event } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
+import { getUserId } from "./utils"
 
 function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
 
     bot.hears(/\/dl_(.+)/, (ctx) => {
-        analytics.logEvent(Event.COMMAND_FILES)
+        analytics.logEvent(Event.COMMAND_FILES, getUserId(ctx))
 
         ctx.reply("⏳ Retrieving files...")
 

@@ -1,3 +1,4 @@
+import { TelegrafContext } from "telegraf/typings/context";
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource";
 
 export function removeCmd(cmd?: string): string {
@@ -24,4 +25,9 @@ export function getUsername(db: DatabaseDataSource, message: string, userId: str
         const username = commandUsername != "" ? commandUsername : defaultUsername
         resolve(username)
     })
+}
+
+export function getUserId(ctx: TelegrafContext): string {
+    const username = ctx.from.id || ""
+    return username.toString()
 }

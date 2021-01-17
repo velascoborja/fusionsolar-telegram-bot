@@ -4,12 +4,12 @@ import Thingiverse from "../datasource/api/thingiverse"
 import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Thing } from "../models/thing"
-import { removeCmd, slice } from "./utils"
+import { getUserId, removeCmd, slice } from "./utils"
 import { EventHelper, Event } from "../analytics/analytics"
 
 function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('tag', function (ctx: TelegrafContext) {
-        analytics.logEvent(Event.COMMAND_TAGS)
+        analytics.logEvent(Event.COMMAND_TAGS, getUserId(ctx))
 
         const tag = removeCmd(ctx.message.text).split(" ")[0]
 

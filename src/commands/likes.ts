@@ -10,7 +10,7 @@ import * as Utils from './utils'
 function commandLikes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
 
     bot.command('likes', async (ctx) => {
-        analytics.logEvent(Event.COMMAND_LIKES)
+        analytics.logEvent(Event.COMMAND_LIKES, Utils.getUserId(ctx))
         const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
 
         if (username != '') {

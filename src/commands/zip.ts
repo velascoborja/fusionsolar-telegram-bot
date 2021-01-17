@@ -4,11 +4,12 @@ import { TelegrafContext } from "telegraf/typings/context"
 import { EventHelper, Event } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
 import { Zip } from "../models/zip"
+import { getUserId } from "./utils"
 
 function commandZip(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
 
     bot.hears(/\/zip_(.+)/, async (ctx) => {
-        analytics.logEvent(Event.COMMAND_ZIP)
+        analytics.logEvent(Event.COMMAND_ZIP, getUserId(ctx))
 
         const thingId = ctx.match[1]
         await ctx.reply("📦 Here's your zip:")
