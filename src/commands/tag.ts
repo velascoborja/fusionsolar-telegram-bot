@@ -5,13 +5,13 @@ import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Thing } from "../models/thing"
 import { getUserId, removeCmd, slice } from "./utils"
-import { EventHelper, Event } from "../analytics/analytics"
+import { EventHelper, Event, EventParam } from "../analytics/analytics"
 
 function commandTag(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('tag', function (ctx: TelegrafContext) {
-        analytics.logEvent(Event.COMMAND_TAGS, getUserId(ctx))
-
         const tag = removeCmd(ctx.message.text).split(" ")[0]
+        
+        analytics.logEvent(Event.COMMAND_TAGS, getUserId(ctx), new Map().set(EventParam.PARAM_TAG, tag))
 
         if (tag != "") {
             loadTagThings(ctx, tag, thingiverse, 0)

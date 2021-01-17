@@ -6,14 +6,13 @@ import { thingToMessage } from "./messages"
 import { Hits } from "../models/hits"
 import { Thing } from "../models/thing"
 import { getUserId, removeCmd, slice } from "./utils"
-import { EventHelper, Event } from "../analytics/analytics"
+import { EventHelper, Event, EventParam } from "../analytics/analytics"
 
 function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('search', function (ctx: TelegrafContext) {
-
-        analytics.logEvent(Event.COMMAND_SEARCH, getUserId(ctx))
-
         const search = removeCmd(ctx.message.text)
+
+        analytics.logEvent(Event.COMMAND_SEARCH, getUserId(ctx), new Map().set(EventParam.PARAM_SEARCH, search))
 
         if (search != "") {
             loadSearch(ctx, search, thingiverse, 0)

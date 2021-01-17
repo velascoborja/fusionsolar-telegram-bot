@@ -4,15 +4,15 @@ export class EventHelper {
     client: any
     db: DatabaseDataSource
 
-    constructor(db : DatabaseDataSource) {
+    constructor(db: DatabaseDataSource) {
         const Analytics = require('analytics-node')
         this.client = new Analytics(process.env.SEGMENT_API_KEY)
         this.db = db
     }
 
-    logEvent(event: Event, userId? : string) {
+    logEvent(event: Event, userId?: string, params?: Map<EventParam, string>) {
         try {
-            this.db.trackEvent(event, userId)
+            this.db.trackEvent(event, userId, params)
         } catch (error) {
             console.log(error)
         }
@@ -33,4 +33,13 @@ export enum Event {
     COMMAND_TAGS = "command_tags",
     COMMAND_SEARCH = "command_search",
     COMMAND_USERNAME = "command_username"
+}
+
+
+
+
+export enum EventParam {
+    PARAM_SEARCH = "param_search",
+    PARAM_THING_ID = "param_thing_id",
+    PARAM_TAG = "PARAM_TAG"
 }

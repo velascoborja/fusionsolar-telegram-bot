@@ -1,5 +1,6 @@
 import { TelegrafContext } from "telegraf/typings/context";
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource";
+import { User } from "../models/user";
 
 export function removeCmd(cmd?: string): string {
     if (cmd != undefined) return cmd?.replace(/(\/\w+)\s*/, '')
@@ -30,4 +31,14 @@ export function getUsername(db: DatabaseDataSource, message: string, userId: str
 export function getUserId(ctx: TelegrafContext): string {
     const username = ctx.from.id || ""
     return username.toString()
+}
+
+export function getUser(ctx: TelegrafContext, thingiverseUsername?: string): User {
+    const username = ctx.from.username || ""
+    const lastName = ctx.from.last_name || ""
+    const name = ctx.from.first_name || ""
+    const languageCode = ctx.from.language_code || ""
+    const userId = ctx.message.from.id.toString()
+
+    return new User(userId, username, thingiverseUsername, languageCode, name, lastName)
 }

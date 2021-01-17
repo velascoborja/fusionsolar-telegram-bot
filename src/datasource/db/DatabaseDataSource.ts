@@ -3,7 +3,7 @@ import { Resolver } from 'dns'
 import { Collection, Db, MongoClient } from 'mongodb'
 import { resolve } from 'path'
 import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
-import { Event } from '../../analytics/analytics'
+import { Event, EventParam } from '../../analytics/analytics'
 import { User } from '../../models/user'
 
 class DatabaseDataSource {
@@ -34,9 +34,9 @@ class DatabaseDataSource {
         })
     }
 
-    trackEvent(event: Event, userId?: string) {
+    trackEvent(event: Event, userId?: string, params?: Map<EventParam, string>) {
         try {
-            this.eventsCollection.insertOne({ event: event, userId: userId })
+            this.eventsCollection.insertOne({ event: event, userId: userId, params: params })
         } catch (error) {
             console.log(error)
         }
@@ -53,6 +53,24 @@ class DatabaseDataSource {
                 .catch(function (error) {
                     reject(error)
                 })
+        })
+    }
+
+    createUser(user: User): Promise<boolean> {
+        const dataBase = this
+
+        return new Promise(async function (resolve, reject) {
+            const previousUser = await dataBase.usersCollection.findOne({ id: user.id })
+
+            if (previousUser == null) {
+                dataBase.usersCollection.insertOne(user)
+                    .then(function (result) {
+                        resolve(true)
+                    })
+                    .catch(function (error) {
+                        reject(error)
+                    })
+            }
         })
     }
 

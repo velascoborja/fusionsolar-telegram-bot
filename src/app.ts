@@ -33,7 +33,7 @@ function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
     const bot = new Telegraf(process.env.BOT_TOKEN || '')
     const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
 
-    commandStart(bot, analytics)
+    commandStart(bot, analytics, dataBase)
     commandHelp(bot, analytics)
     commandLikes(bot, thingiverse, dataBase, analytics)
     commandCollections(bot, thingiverse, dataBase, analytics)

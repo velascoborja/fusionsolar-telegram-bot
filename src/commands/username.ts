@@ -1,10 +1,9 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import { EventHelper, Event } from "../analytics/analytics"
+import { Event, EventHelper } from "../analytics/analytics"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
-import { User } from "../models/user"
 import { getSetUsernameMessage } from "./messages"
-import { getUserId } from "./utils"
+import { getUser, getUserId } from "./utils"
 
 function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analytics: EventHelper) {
 
@@ -19,16 +18,11 @@ function commandUsername(bot: Telegraf<any>, database: DatabaseDataSource, analy
     bot.on("message", function (ctx: TelegrafContext) {
         if (ctx.message.reply_to_message != undefined && ctx.message.reply_to_message.text == getSetUsernameMessage()) {
             const thingiverseUsername = ctx.message.text
-            const username = ctx.from.username || ""
-            const lastName = ctx.from.last_name || ""
-            const name = ctx.from.first_name || ""
-            const languageCode = ctx.from.language_code || ""
-            const userId = ctx.message.from.id.toString()
 
             if (thingiverseUsername == undefined || thingiverseUsername == "") {
                 ctx.reply("📭 Username cannot be empty")
             } else {
-                database.insertOrUpdateUser(new User(userId, username, thingiverseUsername, languageCode, name, lastName))
+                database.insertOrUpdateUser(getUser(ctx, thingiverseUsername))
                     .then(function (result) {
                         ctx.reply(`✅ Username "${thingiverseUsername}" was correctly saved.\n\nFrom now on you can execute commands without specifing a username and the one you just set will be used`)
                     })
