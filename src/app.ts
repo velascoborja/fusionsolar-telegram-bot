@@ -15,6 +15,8 @@ import commandMakes from './commands/makes'
 import DatabaseDataSource from './datasource/db/DatabaseDataSource'
 import commandUsername from './commands/username'
 import { EventHelper, Event } from './analytics/analytics'
+import commandPopular from './commands/popular'
+import commandCategories from './commands/categories'
 
 dotenv.config()
 
@@ -34,6 +36,7 @@ function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
     const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
 
     commandStart(bot, analytics, dataBase)
+    commandCategories(bot, thingiverse, dataBase, analytics)
     commandHelp(bot, analytics)
     commandLikes(bot, thingiverse, dataBase, analytics)
     commandCollections(bot, thingiverse, dataBase, analytics)
@@ -43,6 +46,7 @@ function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
     commandZip(bot, thingiverse, analytics)
     commandTag(bot, thingiverse, analytics)
     commandSearch(bot, thingiverse, analytics)
+    commandPopular(bot, thingiverse, analytics)
     commandUsername(bot, dataBase, analytics)
 
     bot.launch()

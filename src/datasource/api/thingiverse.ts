@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
+import { Category } from '../../models/category';
 import { Collection } from '../../models/collection';
 import { File } from '../../models/file';
 import { Hits } from '../../models/hits';
@@ -8,6 +9,9 @@ import { Zip } from '../../models/zip';
 import { get } from './utils';
 
 class Thingiverse {
+    getCategoryForId(categoryId: any) {
+        throw new Error("Method not implemented.");
+    }
 
     private api: AxiosInstance
 
@@ -53,11 +57,19 @@ class Thingiverse {
     }
 
     searchThings(search: string): Promise<Hits> {
-        return get(this.api, `search/${search}`)
+        return get(this.api, `search?q=${search}&type=things&sort=relevant&page=1&per_page=50`)
     }
 
     getUserMakes(userName: string): Promise<Array<Make>> {
         return get(this.api, `users/${userName}/copies`)
+    }
+
+    getPopularThings(): Promise<Hits> {
+        return get(this.api, 'search/?page=1&per_page=50&sort=popular&posted_after=now-30d&type=things')
+    }
+
+    getCategories() : Promise<Array<Category>> {
+        return get(this.api, 'categories')
     }
 }
 

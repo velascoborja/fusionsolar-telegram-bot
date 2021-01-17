@@ -19,6 +19,9 @@ export class EventHelper {
     }
 }
 
+
+
+
 export enum Event {
     APP_START = "app_start",
 
@@ -32,14 +35,13 @@ export enum Event {
     COMMAND_ZIP = "command_zip",
     COMMAND_TAGS = "command_tags",
     COMMAND_SEARCH = "command_search",
-    COMMAND_USERNAME = "command_username"
+    COMMAND_USERNAME = "command_username",
+    COMMAND_POPULAR = "command_popular",
+    COMMAND_CATEGORIES = "command_categories"
 }
-
-
-
 
 export enum EventParam {
     PARAM_SEARCH = "param_search",
     PARAM_THING_ID = "param_thing_id",
-    PARAM_TAG = "PARAM_TAG"
+    PARAM_TAG = "param_tag"
 }
