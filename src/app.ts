@@ -28,6 +28,7 @@ new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot'
     })
     .catch(function (err) {
         console.log("Error starting bot")
+        console.log(err)
     })
 
 function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
