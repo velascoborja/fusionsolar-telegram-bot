@@ -5,8 +5,6 @@ export class EventHelper {
     db: DatabaseDataSource
 
     constructor(db: DatabaseDataSource) {
-        const Analytics = require('analytics-node')
-        this.client = new Analytics(process.env.SEGMENT_API_KEY)
         this.db = db
     }
 
@@ -18,9 +16,6 @@ export class EventHelper {
         }
     }
 }
-
-
-
 
 export enum Event {
     APP_START = "app_start",
