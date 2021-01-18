@@ -57,7 +57,7 @@ class Thingiverse {
     }
 
     searchThings(search: string): Promise<Hits> {
-        return get(this.api, `search/${search}?type=things&sort=relevant&page=1&per_page=20`)
+        return get(this.api, `search/${search}?type=things&sort=relevant&page=1&per_page=50`)
     }
 
     getUserMakes(userName: string): Promise<Array<Make>> {
