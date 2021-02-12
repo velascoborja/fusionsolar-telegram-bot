@@ -23,9 +23,9 @@ function commandSearch(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: 
 
     bot.action(/searchMore (.+)/, (ctx: TelegrafContext) => {
         const args = ctx.match[1]
-        const pageToLoad = Number(args.split(" ")[0])
-        const search = args.split(" ")[1]
-        loadSearch(ctx, search, thingiverse, pageToLoad)
+        const pageToLoad = args.split(" ")[0]
+        const search = args.replace(pageToLoad, "").trim()
+        loadSearch(ctx, search, thingiverse, Number(pageToLoad))
     })
 }
 
