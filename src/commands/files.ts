@@ -1,6 +1,6 @@
 import { Telegraf } from "telegraf"
 import { EventHelper, Event } from "../analytics/analytics"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import { getUserId } from "./utils"
 
 function commandFiles(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {

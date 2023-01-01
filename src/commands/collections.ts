@@ -1,6 +1,6 @@
 import { Extra, Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import { Collection } from "../models/collection"

@@ -1,12 +1,12 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Hits } from "../models/hits"
 import { getUserId, removeCmd, slice } from "./utils"
 import { EventHelper, Event, EventParam } from "../analytics/analytics"
-import { Thing } from "../models/thing"
+import { Thing } from "../models/station"
 
 function commandPopular(bot: Telegraf<any>, thingiverse: Thingiverse, analytics: EventHelper) {
     bot.command('popular', function (ctx: TelegrafContext) {

@@ -1,10 +1,10 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import { ITEMS_PER_PAGE } from "./const"
 import { thingToMessage } from "./messages"
 import { Hits } from "../models/hits"
-import { Thing } from "../models/thing"
+import { Thing } from "../models/station"
 import { getUserId, removeCmd, slice } from "./utils"
 import { EventHelper, Event, EventParam } from "../analytics/analytics"
 

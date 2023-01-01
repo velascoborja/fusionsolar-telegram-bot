@@ -1,4 +1,4 @@
-import { Thing } from "./thing";
+import { Thing } from "./station";
 
 export interface Make {
     id: number;

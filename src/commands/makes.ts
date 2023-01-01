@@ -1,7 +1,7 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import { EventHelper, Event } from "../analytics/analytics"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"

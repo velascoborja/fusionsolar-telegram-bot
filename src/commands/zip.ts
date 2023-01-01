@@ -2,7 +2,7 @@ import { rejects } from "assert"
 import { Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import { EventHelper, Event, EventParam } from "../analytics/analytics"
-import Thingiverse from "../datasource/api/thingiverse"
+import Thingiverse from "../datasource/api/fusionsolar"
 import { Zip } from "../models/zip"
 import { getUserId } from "./utils"
 
