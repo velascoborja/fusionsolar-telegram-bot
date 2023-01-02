@@ -1,7 +1,7 @@
 {
-  "name": "thingiversemakerbot",
+  "name": "fusionsolartelegrambot",
   "version": "1.0.0",
-  "description": "Thingiverse Telegram bot",
+  "description": "Fusionsolar Telegram bot",
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://borjavg@bitbucket.org/borjavg/telegrambot.git"
+    "url": "git+https://github.com/velascoborja/fusionsolar-telegram-bot"
   },
   "author": "BorjaVG",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/borjavg/telegrambot#readme",
+  "homepage": "https://github.com/velascoborja/fusionsolar-telegram-bot/blob/master/README.md",
   "dependencies": {
     "@types/analytics-node": "^3.1.4",
     "@types/node": "^14.14.19",

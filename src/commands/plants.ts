@@ -5,16 +5,14 @@ import FusionSolar from "../datasource/api/fusionsolar"
 function commandStatus(bot: Telegraf<any>, thingiverse: FusionSolar) {
 
     bot.command('status', async (ctx) => {
-    
-            loadStatus(thingiverse, ctx)
-
+        loadStatus(thingiverse, ctx)
     })
 }
 
 function loadStatus(fusionsolar: FusionSolar, ctx: TelegrafContext) {
     ctx.reply("⏳ Loading plant status...")
 
-    fusionsolar.getUserLikes()
+    fusionsolar.getStations()
         .then(async function (things) {
             ctx.reply("Station list")
         })
