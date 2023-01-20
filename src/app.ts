@@ -3,17 +3,26 @@ import * as dotenv from 'dotenv'
 import FusionSolar from './datasource/api/fusionsolar'
 
 import commandPlants from './commands/plants'
+import DatabaseDataSource from './datasource/db/DatabaseDataSource'
 
 dotenv.config()
-initTelegraf()
-console.log("Bot started successfully")
 
-function initTelegraf() {
+new DatabaseDataSource().init('mongodb://localhost:27017', 'fusionsolarbot')
+    .then(function (databaseDataSource) {
+        initTelegraf(databaseDataSource)
+        console.log("Bot started successfully")
+    })
+    .catch(function (err) {
+        console.log("Error starting bot")
+        console.log(err)
+    })
+
+function initTelegraf(databaseDataSource: DatabaseDataSource) {
 
     const bot = new Telegraf(process.env.BOT_TOKEN || '')
-    const thingiverse = new FusionSolar(process.env.FUSIONSOLAR_TOKEN)
+    const fusionSolar = new FusionSolar(databaseDataSource)
 
-    commandPlants(bot, thingiverse)
+    commandPlants(bot, fusionSolar)
 
     bot.launch()
 }

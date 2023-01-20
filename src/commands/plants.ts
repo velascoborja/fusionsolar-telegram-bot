@@ -1,24 +1,30 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import FusionSolar from "../datasource/api/fusionsolar"
+import { FusionSolarResponse } from "../datasource/api/models/response"
+import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import { Plant } from "../models/plant"
 
-function commandStatus(bot: Telegraf<any>, thingiverse: FusionSolar) {
+function commandPlants(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
-    bot.command('status', async (ctx) => {
-        loadStatus(thingiverse, ctx)
+    bot.command('plants', async (ctx) => {
+        loadPlants(fusionsolar, ctx)
     })
 }
 
-function loadStatus(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-    ctx.reply("⏳ Loading plant status...")
+async function loadPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
+    ctx.reply("⏳ Loading plants...")
+    const userId = ctx.message?.from?.id.toString()
 
-    fusionsolar.getStations()
-        .then(async function (things) {
-            ctx.reply("Station list")
+    fusionsolar.getStations(userId)
+        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
+            response.data.forEach(function (value) {
+                ctx.reply(value.stationName)
+            })
         })
         .catch(function (error) {
-            ctx.reply("Couldn't retrieve yout likes 🤷‍♂️")
+            ctx.reply("Couldn't retrieve yout plants 🤷‍♂️")
         })
 }
 
-export default commandStatus
+export default commandPlants

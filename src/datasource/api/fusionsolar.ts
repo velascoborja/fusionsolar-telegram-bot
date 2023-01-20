@@ -1,35 +1,24 @@
 import axios, { AxiosInstance } from 'axios'
-import { Station } from '../../models/station';
+import { Plant } from '../../models/plant'
+import DatabaseDataSource from '../db/DatabaseDataSource';
+import { FusionSolarResponse } from './models/response';
 import { get, post } from './utils';
 
 class FusionSolar {
 
     private api: AxiosInstance
+    private db: DatabaseDataSource
 
-    constructor(token: string) {
-
+    constructor(db: DatabaseDataSource) {
         this.api = axios.create({
             baseURL: 'https://intl.fusionsolar.huawei.com/thirdData/',
-            timeout: 15000,
-            headers: { 'XSRF-TOKEN': `${token}` }
+            timeout: 15000
         })
-
-        this.api.interceptors.response.use((response) => {
-            if (response.data.failCode == 305) {
-                this.relogin()
-            } else return response
-        })
+        this.db = db
     }
 
-    getStations(): Promise<Array<Station>> {
-        return post(this.api, `getStationList`)
-    }
-
-    relogin(): Promise<string> {
-        return post(this.api, `login`, {
-            "userName": "borjavelasco",
-            "systemCode": "12345678aA"
-        })
+    getStations(userId: string): Promise<FusionSolarResponse<Array<Plant>>> {
+        return post(this.api, `getStationList`, this.db, userId)
     }
 }
 

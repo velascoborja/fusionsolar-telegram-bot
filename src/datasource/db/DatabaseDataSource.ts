@@ -1,15 +1,9 @@
-import { Console } from 'console'
-import { Resolver } from 'dns'
 import { Collection, Db, MongoClient } from 'mongodb'
-import { resolve } from 'path'
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
-import { Event, EventParam } from '../../analytics/analytics'
 import { User } from '../../models/user'
 
 class DatabaseDataSource {
 
     private usersCollection: Collection
-    private eventsCollection: Collection
 
     init(url: string, dbName: string): Promise<DatabaseDataSource> {
         const database = this
@@ -24,8 +18,6 @@ class DatabaseDataSource {
                     database.usersCollection = db.collection("users")
                     database.usersCollection.createIndex({ "id": 1 }, { unique: true })
 
-                    database.eventsCollection = db.collection("events")
-
                     resolve(database)
                 })
                 .catch(function (error) {
@@ -34,15 +26,7 @@ class DatabaseDataSource {
         })
     }
 
-    trackEvent(event: Event, userId?: string, params?: Map<EventParam, string>) {
-        try {
-            this.eventsCollection.insertOne({ event: event, userId: userId, params: params })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    insertOrUpdateUser(user: User): Promise<boolean> {
+    async insertOrUpdateUser(user: User): Promise<boolean> {
         const dataBase = this
 
         return new Promise(function (resolve, reject) {
@@ -81,7 +65,7 @@ class DatabaseDataSource {
             dataBase.usersCollection.findOne({ id: userId })
                 .then(function (result: User) {
                     if (result != null) {
-                        resolve(new User(result.id, result.userName, result.thingiverseUsername, result.languageCode, result.name, result.name))
+                        resolve(new User(result.id, result.fusionSolarToken))
                     } else {
                         reject(Error("No user found"))
                     }
@@ -92,13 +76,13 @@ class DatabaseDataSource {
         })
     }
 
-    getUserThingiverseUsername(userId: string): Promise<string> {
+    getUserFusionsonSolarToken(userId: string): Promise<string> {
         const dataBase = this
 
         return new Promise(function (resolve, reject) {
             dataBase.usersCollection.findOne({ id: userId })
                 .then(function (result: User) {
-                    resolve(result?.thingiverseUsername || '')
+                    resolve(result?.fusionSolarToken || '')
                 })
                 .catch(function (error) {
                     resolve('')
