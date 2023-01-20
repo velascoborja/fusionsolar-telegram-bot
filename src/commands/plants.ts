@@ -18,8 +18,9 @@ async function loadPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
 
     fusionsolar.getStations(userId)
         .then(async function (response: FusionSolarResponse<Array<Plant>>) {
-            response.data.forEach(function (value) {
-                ctx.reply(value.stationName)
+            ctx.reply("☀️ These are your plants")
+            response.data.forEach(function (value, index) {
+                ctx.reply(`${Plant.toMessage(value)}\n\n`)
             })
         })
         .catch(function (error) {

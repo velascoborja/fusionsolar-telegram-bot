@@ -3,19 +3,7 @@ import { User } from "../../models/user"
 import DatabaseDataSource from "../db/DatabaseDataSource"
 import { FusionSolarResponse } from "./models/response"
 
-export function get<T>(api: AxiosInstance, endpoint: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-        api.get(endpoint)
-            .then(async function (response) {
-                resolve(response.data)
-            })
-            .catch(function (error) {
-                reject(error)
-            })
-    })
-}
-
-export async function post<T>(api: AxiosInstance, endpoint: string, db: DatabaseDataSource, userId: string, body: any = ""): Promise<FusionSolarResponse<T>>{
+export async function post<T>(api: AxiosInstance, endpoint: string, db: DatabaseDataSource, userId: string, body: any = ""): Promise<FusionSolarResponse<T>> {
     const userToken = await db.getUserFusionsonSolarToken(userId)
 
     return new Promise((resolve, reject) => {
@@ -28,7 +16,7 @@ export async function post<T>(api: AxiosInstance, endpoint: string, db: Database
                 relogin(api).then(async function (response: Response) {
                     const newToken = response.headers["xsrf-token"]
 
-                    if(newToken == '' || newToken == undefined){
+                    if (newToken == '' || newToken == undefined) {
                         reject("no token available")
                     }
 
@@ -36,15 +24,16 @@ export async function post<T>(api: AxiosInstance, endpoint: string, db: Database
 
                     post(api, endpoint, db, userId, body)
                 })
+            } else if (response.data.failCode == 407) {
+                reject(407)
             } else if (response.status != 200) {
                 reject("unsuccessful response")
             } else {
                 resolve(response.data)
             }
+        }).catch(function (error) {
+            reject(error)
         })
-            .catch(function (error) {
-                reject(error)
-            })
     })
 }
 

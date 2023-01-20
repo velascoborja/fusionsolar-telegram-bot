@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from 'axios'
+import { Device } from '../../models/device';
 import { Plant } from '../../models/plant'
 import DatabaseDataSource from '../db/DatabaseDataSource';
 import { FusionSolarResponse } from './models/response';
-import { get, post } from './utils';
+import { post } from './utils';
 
 class FusionSolar {
 
@@ -19,6 +20,10 @@ class FusionSolar {
 
     getStations(userId: string): Promise<FusionSolarResponse<Array<Plant>>> {
         return post(this.api, `getStationList`, this.db, userId)
+    }
+
+    getDevicesForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<Device>>> {
+        return post(this.api, `getDevList`, this.db, userId)
     }
 }
 
