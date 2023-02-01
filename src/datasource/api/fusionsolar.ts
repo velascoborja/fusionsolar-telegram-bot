@@ -23,7 +23,7 @@ class FusionSolar {
     }
 
     getDevicesForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<Device>>> {
-        return post(this.api, `getDevList`, this.db, userId)
+        return post(this.api, `getDevList`, this.db, userId, { stationCodes : `${plantId}` })
     }
 }
 

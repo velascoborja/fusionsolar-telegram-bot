@@ -14,7 +14,7 @@ function commandDevices(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
     bot.action(/device (.+)/, async (ctx) => {
         ctx.reply("⏳ Loading plant devices...")
-        const userId = ctx.message?.from?.id.toString()
+        const userId = ctx.from?.id.toString()
 
         const plantId = ctx.match[1]
         
