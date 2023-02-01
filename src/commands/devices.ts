@@ -17,10 +17,10 @@ function commandDevices(bot: Telegraf<any>, fusionsolar: FusionSolar) {
         const userId = ctx.from?.id.toString()
 
         const plantId = ctx.match[1]
-        
-        fusionsolar.getDevicesForPlantId(plantId, userId).then(function (response){
+
+        fusionsolar.getDevicesForPlantId(plantId, userId).then(function (response) {
             loadPlantDevices(fusionsolar, ctx, response.data)
-        }).catch(function (error){
+        }).catch(function (error) {
             ctx.reply(`👎 Error retrieving your devices: ${error}`)
         })
     })
@@ -50,8 +50,10 @@ async function loadPlantDevices(fusionsolar: FusionSolar, ctx: TelegrafContext, 
     if (devices == null || devices.length == 0) {
         ctx.reply(`👎 Error retrieving plant devices`)
     } else {
+        ctx.reply("👨‍💻 These are your plant's devices:")
+
         devices.forEach(function (value) {
-            ctx.reply(`${value.devName}\n`)
+            ctx.reply(`Device name: ${value.devName}\nType ID: ${value.devTypeId}\nInverter type: ${value.invType}\nSoftware version: ${value.softwareVersion}`)
         })
     }
 }

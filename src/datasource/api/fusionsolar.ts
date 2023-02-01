@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { Device } from '../../models/device';
 import { Plant } from '../../models/plant'
+import { PlantRealTime } from '../../models/plantRealTime';
 import DatabaseDataSource from '../db/DatabaseDataSource';
 import { FusionSolarResponse } from './models/response';
 import { post } from './utils';
@@ -23,7 +24,11 @@ class FusionSolar {
     }
 
     getDevicesForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<Device>>> {
-        return post(this.api, `getDevList`, this.db, userId, { stationCodes : `${plantId}` })
+        return post(this.api, `getDevList`, this.db, userId, { stationCodes: `${plantId}` })
+    }
+
+    getPlantRealStatus(userId: string, plantId: string): Promise<FusionSolarResponse<PlantRealTime>> {
+        return post(this.api, `getStationRealKpi`, this.db, userId, { stationCodes: `${plantId}` })
     }
 }
 
