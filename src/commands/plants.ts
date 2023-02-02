@@ -17,12 +17,14 @@ function commandPlants(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
     bot.action(/plant (.+)/, async (ctx) => {
         ctx.reply("⏳ Loading plant real status...")
-        
+
         const userId = ctx.from?.id.toString()
         const plantId = ctx.match[1]
 
-        fusionsolar.getDevicesForPlantId(plantId, userId).then(function (response) {
-            loadPlantDevices(fusionsolar, ctx, response.data)
+        fusionsolar.getPlantRealStatus(plantId, userId).then(function (response) {
+            let plantRealTimeStatus = response[0].dataItemMap
+
+            ctx.reply(`☀️ Plant real time:\n Current month yield: ${plantRealTimeStatus.month_power}\n Today's yield: ${plantRealTimeStatus.day_power}\n Lifetime yiel: ${plantRealTimeStatus.total_power}`)
         }).catch(function (error) {
             ctx.reply(`👎 Error retrieving your devices: ${error}`)
         })
