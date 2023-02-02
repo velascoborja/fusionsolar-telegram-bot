@@ -27,7 +27,7 @@ class FusionSolar {
         return post(this.api, `getDevList`, this.db, userId, { stationCodes: `${plantId}` })
     }
 
-    getPlantRealStatus(userId: string, plantId: string): Promise<FusionSolarResponse<Array<PlantRealTime>>> {
+    getPlantRealStatus(plantId: string, userId: string): Promise<FusionSolarResponse<Array<PlantRealTime>>> {
         return post(this.api, `getStationRealKpi`, this.db, userId, { stationCodes: `${plantId}` })
     }
 }
