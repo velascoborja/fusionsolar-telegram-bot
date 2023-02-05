@@ -58,6 +58,10 @@ class FusionSolar {
             "devTypeId": 47
         })
     }
+
+    getStatus(plantId: string, userId: string): Promise<FusionSolarResponse<Array<PlantRealTime>>> {
+        return post(this.api, `getStationRealKpi`, this.db, userId, { stationCodes: `${plantId}` })
+    }
 }
 
 export default FusionSolar

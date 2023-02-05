@@ -5,6 +5,7 @@ import FusionSolar from './datasource/api/fusionsolar'
 import commandPlants from './commands/plants'
 import DatabaseDataSource from './datasource/db/DatabaseDataSource'
 import commandDevices from './commands/devices'
+import commandStatus from './commands/status'
 
 dotenv.config()
 
@@ -25,6 +26,7 @@ function initTelegraf(databaseDataSource: DatabaseDataSource) {
 
     commandPlants(bot, fusionSolar)
     commandDevices(bot, fusionSolar)
+    commandStatus(bot, fusionSolar)
 
     bot.launch()
 }
