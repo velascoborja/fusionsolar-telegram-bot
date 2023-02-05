@@ -23,6 +23,8 @@ export async function post<T>(api: AxiosInstance, endpoint: string, db: Database
                     await db.insertOrUpdateUser(new User(userId, newToken))
 
                     resolve(post(api, endpoint, db, userId, body))
+                }).catch(function (error) {
+                    reject(error)
                 })
             } else if (response.data.failCode == 407) {
                 reject(407)
