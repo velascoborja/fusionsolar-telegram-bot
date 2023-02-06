@@ -1,3 +1,4 @@
+import { stat } from "fs"
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import FusionSolar from "../datasource/api/fusionsolar"
@@ -7,6 +8,7 @@ import { Device } from "../models/device"
 import { DeviceDataItemMap } from "../models/deviceRealTime"
 import { MeterDataItemMap } from "../models/meterRealTime"
 import { Plant } from "../models/plant"
+import { Status } from "../models/status"
 
 function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
@@ -20,16 +22,11 @@ function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
         const plantId = ctx.match[1]
 
-        fusionsolar.getInverterForPlantId(plantId, userId)
-            .then(function (promises) {
-                return fusionsolar.getMeterForPlantId(plantId, userId)
-            })
-            .then(function (promises) {
-                ""
-                // "showInverterInfo(ctx, response.data[0].dataItemMap)"
-            }).catch(function (error) {
-                ctx.reply(`👎 Error retrieving plant status`)
-            })
+        fusionsolar.getStatus(plantId, userId).then(function (result) {
+            showCurrentStatus(ctx, result)
+        }).catch(function (error) {
+            ctx.reply("Error retrieving current status 😢")
+        })
     })
 }
 
@@ -51,6 +48,19 @@ async function loadCurrentStatus(fusionsolar: FusionSolar, ctx: TelegrafContext)
         .catch(function (error) {
             ctx.reply("Couldn't retrieve your plants 🤷‍♂️")
         })
+}
+
+function showCurrentStatus(ctx: TelegrafContext, status: Status) {
+    let solarYieldIndicator = status.instantPowerConsumption > 0 ? "☀️" : "🌙"
+    let importExportIndicator = status.instantPowerConsumption > 0 ? "🟢" : "🔴"
+    let currentHouseLoad = Math.abs(status.instantSolarYield - status.instantPowerConsumption)
+
+    ctx.reply("🏠 This is your status:")
+    ctx.reply(`
+    ${solarYieldIndicator} Solar yield: ${status.instantSolarYield} W\n
+    ⚡️ Grid import/export: ${status.instantPowerConsumption} W ${importExportIndicator}\n
+    🔌 House load: ${currentHouseLoad} W`
+    )
 }
 
 export default commandStatus

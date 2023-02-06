@@ -1,9 +1,11 @@
 import axios, { AxiosInstance } from 'axios'
+import { isParenthesizedExpression } from 'typescript';
 import { Device } from '../../models/device';
 import { DeviceRealTime } from '../../models/deviceRealTime';
 import { MeterDataItemMap, MeterRealTime } from '../../models/meterRealTime';
 import { Plant } from '../../models/plant'
 import { PlantRealTime } from '../../models/plantRealTime';
+import { Status } from '../../models/status';
 import DatabaseDataSource from '../db/DatabaseDataSource';
 import { FusionSolarResponse } from './models/response';
 import { post } from './utils';
@@ -49,6 +51,7 @@ class FusionSolar {
     async getMeterForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<MeterRealTime>>> {
         let meterId = await this.getDevicesForPlantId(plantId, userId).then(function (response) {
             let devices = response.data
+
             let meterId = devices.find(element => element.devTypeId == 47).id
             return meterId
         })
@@ -59,8 +62,16 @@ class FusionSolar {
         })
     }
 
-    getStatus(plantId: string, userId: string): Promise<FusionSolarResponse<Array<PlantRealTime>>> {
-        return post(this.api, `getStationRealKpi`, this.db, userId, { stationCodes: `${plantId}` })
+    async getStatus(plantId: string, userId: string): Promise<Status> {
+        let inverterStatus = await this.getInverterForPlantId(plantId, userId)
+        let meterStatus = await this.getMeterForPlantId(plantId, userId)
+
+        let instantPowerConsumption = meterStatus.data[0].dataItemMap.active_power
+        let instantSolarYield = inverterStatus.data[0].dataItemMap.active_power
+
+        return new Promise((resolve, reject) => {
+            resolve(new Status(instantPowerConsumption, instantSolarYield))
+        })
     }
 }
 
