@@ -36,9 +36,9 @@ async function loadPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
     const userId = ctx.from?.id.toString()
 
     fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
+        .then(async function (plants: Array<Plant>) {
             ctx.reply("☀️ These are your plants")
-            response.data.forEach(function (value, index) {
+            plants.forEach(function (value, index) {
                 ctx.reply(`${Plant.toMessage(value)}\n\n`)
             })
         })
@@ -52,8 +52,8 @@ async function loadPlantRealTime(fusionsolar: FusionSolar, ctx: TelegrafContext)
     const userId = ctx.from?.id.toString()
 
     fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
-            const plantsKeyboard = Markup.inlineKeyboard(response.data.map(it =>
+        .then(async function (plants: Array<Plant>) {
+            const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
                 Markup.callbackButton(it.stationName, `plant ${it.stationCode}`))).extra()
 
             ctx.reply(

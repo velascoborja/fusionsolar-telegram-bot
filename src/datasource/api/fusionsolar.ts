@@ -23,8 +23,19 @@ class FusionSolar {
         this.db = db
     }
 
-    getStations(userId: string): Promise<FusionSolarResponse<Array<Plant>>> {
-        return post(this.api, `getStationList`, this.db, userId)
+    async getStations(userId: string): Promise<Array<Plant>> {
+        const dataBase = this.db
+        let storedPlants = await this.db.getPlantsForUserId(userId)
+
+        if (storedPlants != null && storedPlants.length > 0) return storedPlants
+
+        return post(this.api, `getStationList`, this.db, userId).then(function (response) {
+            let plants = response.data as Array<Plant>
+            dataBase.insertOrUpdateUserPlants(plants.map(function (plant) {
+                return Plant.updateWithUserId(plant, userId)
+            }))
+            return plants
+        })
     }
 
     async getDevicesForPlantId(plantId: string, userId: string): Promise<Array<Device>> {
@@ -32,7 +43,7 @@ class FusionSolar {
         let storedDevices = await this.db.getDevicesForPlantId(plantId)
 
         if (storedDevices != null && storedDevices.length > 0) return storedDevices
-        
+
         return post(this.api, `getDevList`, this.db, userId, { stationCodes: `${plantId}` }).then(function (response) {
             let devices = response.data as Array<Device>
             dataBase.insertOrUpdatePlantDevices(devices)

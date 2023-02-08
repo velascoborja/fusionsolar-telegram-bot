@@ -67,9 +67,9 @@ async function loadDevices(fusionsolar: FusionSolar, ctx: TelegrafContext) {
     const userId = ctx.message?.from?.id.toString()
 
     fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
+        .then(async function (plants: Array<Plant>) {
 
-            const plantsKeyboard = Markup.inlineKeyboard(response.data.map(it =>
+            const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
                 Markup.callbackButton(it.stationName, `device ${it.stationCode}`))).extra()
 
             ctx.reply(
@@ -87,9 +87,9 @@ async function loadInverter(fusionsolar: FusionSolar, ctx: TelegrafContext) {
     const userId = ctx.message?.from?.id.toString()
 
     fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
+        .then(async function (plants: Array<Plant>) {
 
-            const plantsKeyboard = Markup.inlineKeyboard(response.data.map(it =>
+            const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
                 Markup.callbackButton(it.stationName, `inverter ${it.stationCode}`))).extra()
 
             ctx.reply(
@@ -107,9 +107,9 @@ async function loadMeter(fusionsolar: FusionSolar, ctx: TelegrafContext) {
     const userId = ctx.message?.from?.id.toString()
 
     fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
+        .then(async function (plants: Array<Plant>) {
 
-            const plantsKeyboard = Markup.inlineKeyboard(response.data.map(it =>
+            const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
                 Markup.callbackButton(it.stationName, `meter ${it.stationCode}`))).extra()
 
             ctx.reply(

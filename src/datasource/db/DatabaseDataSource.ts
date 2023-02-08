@@ -1,11 +1,13 @@
 import { Collection, Db, MongoClient } from 'mongodb'
 import { Device } from '../../models/device'
 import { User } from '../../models/user'
+import { Plant } from '../../models/plant'
 
 class DatabaseDataSource {
 
     private usersCollection: Collection
     private devicesCollection: Collection
+    private plantsCollection: Collection
 
     init(url: string, dbName: string): Promise<DatabaseDataSource> {
         const database = this
@@ -22,6 +24,9 @@ class DatabaseDataSource {
 
                     database.devicesCollection = db.collection("devices")
                     database.devicesCollection.createIndex({ "id": 1 }, { unique: true })
+
+                    database.plantsCollection = db.collection("plants")
+                    database.plantsCollection.createIndex({ "stationsCode": 1 }, { unique: true })
 
                     resolve(database)
                 })
@@ -55,6 +60,33 @@ class DatabaseDataSource {
             })
 
             resolve(true)
+        })
+    }
+
+    async insertOrUpdateUserPlants(plants: Array<Plant>): Promise<boolean> {
+        const dataBase = this
+
+        return new Promise(function (resolve) {
+
+            plants.forEach(function (plant) {
+                dataBase.plantsCollection.updateOne({ userId: plant.userId }, { $set: plant }, { upsert: true })
+            })
+
+            resolve(true)
+        })
+    }
+
+    async getPlantsForUserId(userId: string): Promise<Array<Plant>> {
+        const dataBase = this
+
+        return new Promise(function (resolve) {
+            dataBase.plantsCollection.find({ userId: userId }).toArray()
+                .then(function (plants: Array<Plant>) {
+                    resolve(plants)
+                })
+                .catch(function (error) {
+                    resolve([])
+                })
         })
     }
 

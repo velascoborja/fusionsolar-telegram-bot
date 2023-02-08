@@ -13,7 +13,7 @@ import { Status } from "../models/status"
 function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
     bot.command('status', async (ctx) => {
-        loadCurrentStatus(fusionsolar, ctx)
+        loadUserPlants(fusionsolar, ctx)
     })
 
     bot.action(/plantStatus (.+)/, async (ctx) => {
@@ -22,43 +22,54 @@ function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
         const plantId = ctx.match[1]
 
+        getPlantStatus(plantId, userId, ctx)
+    })
+
+    async function loadUserPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
+        ctx.reply("⏳ Loading...")
+        const userId = ctx.message?.from?.id.toString()
+
+        fusionsolar.getStations(userId)
+            .then(async function (plants: Array<Plant>) {
+
+                // If there are more than 1 plant available, first ask to choose a plant
+                if (plants.length > 1) {
+                    const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
+                        Markup.callbackButton(it.stationName, `plantStatus ${it.stationCode}`))).extra()
+
+                    ctx.reply(
+                        "☀️ Select a plant for loading status",
+                        plantsKeyboard
+                    )
+                } else {
+                    // If only one plant, just show its info
+                    let plantId = plants[0].stationCode
+                    getPlantStatus(plantId, userId, ctx)
+                }
+            })
+            .catch(function (error) {
+                ctx.reply("Couldn't retrieve your plants 🤷‍♂️")
+            })
+    }
+
+    function getPlantStatus(plantId: string, userId: string, ctx: TelegrafContext) {
         fusionsolar.getStatus(plantId, userId).then(function (result) {
             showCurrentStatus(ctx, result)
         }).catch(function (error) {
             ctx.reply("Error retrieving current status 😢")
         })
-    })
-}
+    }
 
-async function loadCurrentStatus(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-    ctx.reply("⏳ Loading plants...")
-    const userId = ctx.message?.from?.id.toString()
+    function showCurrentStatus(ctx: TelegrafContext, status: Status) {
+        let solarYieldIndicator = status.instantPowerConsumption > 0 ? "☀️" : "🌙"
+        let importExportIndicator = status.instantPowerConsumption > 0 ? "🟢" : "🔴"
+        let currentHouseLoad = Math.abs((status.instantSolarYield * 1000) - status.instantPowerConsumption)
 
-    fusionsolar.getStations(userId)
-        .then(async function (response: FusionSolarResponse<Array<Plant>>) {
-
-            const plantsKeyboard = Markup.inlineKeyboard(response.data.map(it =>
-                Markup.callbackButton(it.stationName, `plantStatus ${it.stationCode}`))).extra()
-
-            ctx.reply(
-                "☀️ Select a plant for loading status",
-                plantsKeyboard
-            )
-        })
-        .catch(function (error) {
-            ctx.reply("Couldn't retrieve your plants 🤷‍♂️")
-        })
-}
-
-function showCurrentStatus(ctx: TelegrafContext, status: Status) {
-    let solarYieldIndicator = status.instantPowerConsumption > 0 ? "☀️" : "🌙"
-    let importExportIndicator = status.instantPowerConsumption > 0 ? "🟢" : "🔴"
-    let currentHouseLoad = Math.abs((status.instantSolarYield * 1000) - status.instantPowerConsumption)
-
-    ctx.reply("🏠 This is your status:")
-    ctx.reply(`
-    ${solarYieldIndicator} Solar power: ${status.instantSolarYield} kW\n🔌 House load: ${currentHouseLoad} W\n${importExportIndicator} Grid import/export: ${status.instantPowerConsumption} W\n`
-    )
+        ctx.reply("🏠 This is your status:")
+        ctx.reply(`
+        ${solarYieldIndicator} Solar power: ${status.instantSolarYield} kW\n🔌 House load: ${currentHouseLoad} W\n${importExportIndicator} Grid import/export: ${status.instantPowerConsumption} W\n`
+        )
+    }
 }
 
 export default commandStatus
