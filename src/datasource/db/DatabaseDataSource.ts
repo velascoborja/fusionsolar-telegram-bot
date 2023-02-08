@@ -51,7 +51,7 @@ class DatabaseDataSource {
         return new Promise(function (resolve, reject) {
 
             devices.forEach(function (device) {
-                dataBase.devicesCollection.updateOne(device, { upsert: true })
+                dataBase.devicesCollection.updateOne({ id: device.id }, { $set: device }, { upsert: true })
             })
 
             resolve(true)
@@ -62,7 +62,7 @@ class DatabaseDataSource {
         const dataBase = this
 
         return new Promise(function (resolve) {
-            dataBase.devicesCollection.findOne({ stationCode: plantId })
+            dataBase.devicesCollection.find({ stationCode: plantId }).toArray()
                 .then(function (devices: Array<Device>) {
                     resolve(devices)
                 })
