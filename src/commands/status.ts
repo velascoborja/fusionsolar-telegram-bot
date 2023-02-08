@@ -57,7 +57,7 @@ function showCurrentStatus(ctx: TelegrafContext, status: Status) {
 
     ctx.reply("🏠 This is your status:")
     ctx.reply(`
-    ${solarYieldIndicator} Solar yield: ${status.instantSolarYield} kW\n⚡️ Grid import/export: ${status.instantPowerConsumption} W ${importExportIndicator}\n 🔌 House load: ${currentHouseLoad} W`
+    ${solarYieldIndicator} Solar power: ${status.instantSolarYield} kW\n🔌 House load: ${currentHouseLoad} W\n${importExportIndicator} Grid import/export: ${status.instantPowerConsumption} W\n`
     )
 }
 
