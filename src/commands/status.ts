@@ -53,13 +53,11 @@ async function loadCurrentStatus(fusionsolar: FusionSolar, ctx: TelegrafContext)
 function showCurrentStatus(ctx: TelegrafContext, status: Status) {
     let solarYieldIndicator = status.instantPowerConsumption > 0 ? "☀️" : "🌙"
     let importExportIndicator = status.instantPowerConsumption > 0 ? "🟢" : "🔴"
-    let currentHouseLoad = Math.abs(status.instantSolarYield - status.instantPowerConsumption)
+    let currentHouseLoad = Math.abs((status.instantSolarYield * 1000) - status.instantPowerConsumption)
 
     ctx.reply("🏠 This is your status:")
     ctx.reply(`
-    ${solarYieldIndicator} Solar yield: ${status.instantSolarYield} W\n
-    ⚡️ Grid import/export: ${status.instantPowerConsumption} W ${importExportIndicator}\n
-    🔌 House load: ${currentHouseLoad} W`
+    ${solarYieldIndicator} Solar yield: ${status.instantSolarYield} kW\n⚡️ Grid import/export: ${status.instantPowerConsumption} W ${importExportIndicator}\n 🔌 House load: ${currentHouseLoad} W`
     )
 }
 

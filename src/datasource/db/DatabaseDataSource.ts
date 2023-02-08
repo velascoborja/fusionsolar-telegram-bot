@@ -1,9 +1,11 @@
 import { Collection, Db, MongoClient } from 'mongodb'
+import { Device } from '../../models/device'
 import { User } from '../../models/user'
 
 class DatabaseDataSource {
 
     private usersCollection: Collection
+    private devicesCollection: Collection
 
     init(url: string, dbName: string): Promise<DatabaseDataSource> {
         const database = this
@@ -17,6 +19,9 @@ class DatabaseDataSource {
 
                     database.usersCollection = db.collection("users")
                     database.usersCollection.createIndex({ "id": 1 }, { unique: true })
+
+                    database.devicesCollection = db.collection("devices")
+                    database.devicesCollection.createIndex({ "id": 1 }, { unique: true })
 
                     resolve(database)
                 })
@@ -36,6 +41,33 @@ class DatabaseDataSource {
                 })
                 .catch(function (error) {
                     reject(error)
+                })
+        })
+    }
+
+    async insertOrUpdatePlantDevices(devices: Array<Device>): Promise<boolean> {
+        const dataBase = this
+
+        return new Promise(function (resolve, reject) {
+
+            devices.forEach(function (device) {
+                dataBase.devicesCollection.updateOne(device, { upsert: true })
+            })
+
+            resolve(true)
+        })
+    }
+
+    getDevicesForPlantId(plantId: string): Promise<Array<Device>> {
+        const dataBase = this
+
+        return new Promise(function (resolve) {
+            dataBase.devicesCollection.findOne({ stationCode: plantId })
+                .then(function (devices: Array<Device>) {
+                    resolve(devices)
+                })
+                .catch(function (error) {
+                    resolve([])
                 })
         })
     }

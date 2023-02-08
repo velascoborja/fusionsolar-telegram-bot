@@ -28,8 +28,8 @@ function commandDevices(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
         const plantId = ctx.match[1]
 
-        fusionsolar.getDevicesForPlantId(plantId, userId).then(function (response) {
-            showPlantDevices(fusionsolar, ctx, response.data)
+        fusionsolar.getDevicesForPlantId(plantId, userId).then(function (devices) {
+            showPlantDevices(fusionsolar, ctx, devices)
         }).catch(function (error) {
             ctx.reply(`👎 Error retrieving your devices: ${error}`)
         })

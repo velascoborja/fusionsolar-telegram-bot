@@ -27,8 +27,17 @@ class FusionSolar {
         return post(this.api, `getStationList`, this.db, userId)
     }
 
-    getDevicesForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<Device>>> {
-        return post(this.api, `getDevList`, this.db, userId, { stationCodes: `${plantId}` })
+    async getDevicesForPlantId(plantId: string, userId: string): Promise<Array<Device>> {
+        const dataBase = this.db
+        let storedDevices = await this.db.getDevicesForPlantId(plantId)
+
+        if (storedDevices != null && storedDevices.length > 0) return storedDevices
+        
+        return post(this.api, `getDevList`, this.db, userId, { stationCodes: `${plantId}` }).then(function (response) {
+            let devices = response.data as Array<Device>
+            dataBase.insertOrUpdatePlantDevices(devices)
+            return devices
+        })
     }
 
     getPlantRealStatus(plantId: string, userId: string): Promise<FusionSolarResponse<Array<PlantRealTime>>> {
@@ -36,8 +45,7 @@ class FusionSolar {
     }
 
     async getInverterForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<DeviceRealTime>>> {
-        let inverterId = await this.getDevicesForPlantId(plantId, userId).then(function (response) {
-            let devices = response.data
+        let inverterId = await this.getDevicesForPlantId(plantId, userId).then(function (devices) {
             let inverterId = devices.find(element => element.devTypeId == 38).id
             return inverterId
         })
@@ -49,9 +57,7 @@ class FusionSolar {
     }
 
     async getMeterForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<MeterRealTime>>> {
-        let meterId = await this.getDevicesForPlantId(plantId, userId).then(function (response) {
-            let devices = response.data
-
+        let meterId = await this.getDevicesForPlantId(plantId, userId).then(function (devices) {
             let meterId = devices.find(element => element.devTypeId == 47).id
             return meterId
         })
