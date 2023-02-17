@@ -85,9 +85,10 @@ class FusionSolar {
 
         let instantPowerConsumption = meterStatus.data[0].dataItemMap.active_power
         let instantSolarYield = inverterStatus.data[0].dataItemMap.active_power
+        let dailyYield = inverterStatus.data[0].dataItemMap.day_cap
 
         return new Promise((resolve, reject) => {
-            resolve(new Status(instantPowerConsumption, instantSolarYield))
+            resolve(new Status(instantPowerConsumption, instantSolarYield, dailyYield))
         })
     }
 }
