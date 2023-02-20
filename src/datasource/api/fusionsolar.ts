@@ -4,6 +4,7 @@ import { Device } from '../../models/device';
 import { DeviceRealTime } from '../../models/deviceRealTime';
 import { MeterDataItemMap, MeterRealTime } from '../../models/meterRealTime';
 import { Plant } from '../../models/plant'
+import { PlantDailyBalance } from '../../models/plantDailyBalance';
 import { PlantRealTime } from '../../models/plantRealTime';
 import { Status } from '../../models/status';
 import DatabaseDataSource from '../db/DatabaseDataSource';
@@ -89,6 +90,20 @@ class FusionSolar {
 
         return new Promise((resolve, reject) => {
             resolve(new Status(instantPowerConsumption, instantSolarYield, dailyYield))
+        })
+    }
+
+    async getPlantDailyKpi(plantId: string, userId: string): Promise<PlantDailyBalance> {
+        let currentTimeMillis = Date.now()
+        let dailyBalance = await post(this.api, `getKpiStationDay`, this.db, userId, { stationCodes: `${plantId}`, collectTime: `${currentTimeMillis}` })
+
+        let currentDayBalance = dailyBalance.data[(dailyBalance.data as Array<any>).length - 1].dataItemMap
+
+        let imported = currentDayBalance.use_power
+        let exported = currentDayBalance.ongrid_power
+
+        return new Promise((resolve, reject) => {
+            resolve(new PlantDailyBalance(exported, imported))
         })
     }
 }
