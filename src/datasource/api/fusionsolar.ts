@@ -100,8 +100,8 @@ class FusionSolar {
         let currentDayBalance = dailyBalance.data[(dailyBalance.data as Array<any>).length - 1].dataItemMap
 
         let selfConsumed = currentDayBalance.inverter_power - currentDayBalance.ongrid_power
-        let imported = currentDayBalance.use_power - selfConsumed
-        let exported = currentDayBalance.ongrid_power
+        let imported = Math.round((currentDayBalance.use_power - selfConsumed) * 100) / 100
+        let exported = Math.round(currentDayBalance.ongrid_power * 100) / 100
 
         return new Promise((resolve, reject) => {
             resolve(new PlantDailyBalance(exported, imported))
