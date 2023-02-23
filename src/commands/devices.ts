@@ -83,7 +83,7 @@ async function loadDevices(fusionsolar: FusionSolar, ctx: TelegrafContext) {
 }
 
 async function loadInverter(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-    ctx.reply("⏳ Loading plants...")
+    await ctx.reply("⏳ Loading plants...")
     const userId = ctx.message?.from?.id.toString()
 
     fusionsolar.getStations(userId)
@@ -103,7 +103,7 @@ async function loadInverter(fusionsolar: FusionSolar, ctx: TelegrafContext) {
 }
 
 async function loadMeter(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-    ctx.reply("⏳ Loading plants...")
+    await ctx.reply("⏳ Loading plants...")
     const userId = ctx.message?.from?.id.toString()
 
     fusionsolar.getStations(userId)

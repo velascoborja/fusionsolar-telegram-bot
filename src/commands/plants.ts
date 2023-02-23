@@ -11,7 +11,7 @@ function commandPlants(bot: Telegraf<any>, fusionsolar: FusionSolar) {
         loadPlants(fusionsolar, ctx)
     })
 
-    bot.command('plantRealTime', async (ctx) => {
+    bot.command('plantrealtime', async (ctx) => {
         loadPlantRealTime(fusionsolar, ctx)
     })
 
@@ -32,7 +32,7 @@ function commandPlants(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 }
 
 async function loadPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-    ctx.reply("⏳ Loading plants...")
+    await ctx.reply("⏳ Loading plants...")
     const userId = ctx.from?.id.toString()
 
     fusionsolar.getStations(userId)

@@ -6,7 +6,7 @@ import { PlantDailyBalance } from "../models/plantDailyBalance"
 
 function commandBalance(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
-    bot.command('dailyBalance', async (ctx) => {
+    bot.command('dailybalance', async (ctx) => {
         loadUserDailyBalance(fusionsolar, ctx)
     })
 
