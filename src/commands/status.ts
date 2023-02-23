@@ -63,7 +63,7 @@ function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
     function showCurrentStatus(ctx: TelegrafContext, status: Status) {
         let solarYieldIndicator = status.instantPowerConsumption > 0 ? "☀️" : "🌙"
         let importExportIndicator = status.instantPowerConsumption > 0 ? "🟢" : "🔴"
-        let currentHouseLoad = Math.abs((status.instantSolarYield * 1000) - status.instantPowerConsumption) / 1000
+        let currentHouseLoad = Math.round((Math.abs((status.instantSolarYield * 1000) - status.instantPowerConsumption) / 1000) * 100) / 100
 
         ctx.reply("🏠 This is your status:")
         ctx.reply(`
