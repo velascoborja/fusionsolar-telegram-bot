@@ -1,4 +1,4 @@
-import { Telegraf, Markup } from 'telegraf'
+import { Telegraf } from 'telegraf'
 import * as dotenv from 'dotenv'
 import FusionSolar from './datasource/api/fusionsolar'
 
@@ -14,8 +14,11 @@ dotenv.config()
 if (!process.env.BOT_TOKEN) {
     throw new Error("BOT_TOKEN environment variable is required")
 }
+if (!process.env.MONGO_URL || !process.env.MONGO_DB) {
+    throw new Error("MONGO_URL and MONGO_DB environment variables are required")
+}
 
-new DatabaseDataSource().init('mongodb://localhost:27017', 'fusionsolarbot')
+new DatabaseDataSource().init(process.env.MONGO_URL, process.env.MONGO_DB)
     .then(function (databaseDataSource) {
         initTelegraf(databaseDataSource)
         console.log("Bot started successfully")

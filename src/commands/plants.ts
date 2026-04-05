@@ -1,8 +1,6 @@
 import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import FusionSolar from "../datasource/api/fusionsolar"
-import { FusionSolarResponse } from "../datasource/api/models/response"
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
 import { Plant } from "../models/plant"
 
 function commandPlants(bot: Telegraf<any>, fusionsolar: FusionSolar) {

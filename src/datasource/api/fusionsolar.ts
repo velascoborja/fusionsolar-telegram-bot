@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import { isParenthesizedExpression } from 'typescript';
 import { Device } from '../../models/device';
 import { DeviceRealTime } from '../../models/deviceRealTime';
 import { MeterDataItemMap, MeterRealTime } from '../../models/meterRealTime';

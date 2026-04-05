@@ -1,50 +1,23 @@
-import { Markup, Telegraf } from "telegraf"
+import { Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import FusionSolar from "../datasource/api/fusionsolar"
-import { Plant } from "../models/plant"
 import { PlantDailyBalance } from "../models/plantDailyBalance"
+import { selectPlant } from "./plantSelector"
 
 function commandBalance(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
     bot.command('dailybalance', async (ctx) => {
-        loadUserDailyBalance(fusionsolar, ctx)
+        ctx.reply("⏳ Loading...")
+        selectPlant(fusionsolar, ctx, 'plantDailyBalance', '☀️ Select a plant for loading daily balance',
+            (plantId, userId) => getPlantDailyBalance(plantId, userId, ctx))
     })
 
     bot.action(/plantDailyBalance (.+)/, async (ctx) => {
         ctx.reply("⏳ Loading plant balance...")
         const userId = ctx.from?.id.toString()
-
         const plantId = ctx.match[1]
-
         getPlantDailyBalance(plantId, userId, ctx)
     })
-
-    async function loadUserDailyBalance(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-        ctx.reply("⏳ Loading...")
-        const userId = ctx.message?.from?.id.toString()
-
-        fusionsolar.getStations(userId)
-            .then(async function (plants: Array<Plant>) {
-
-                // If there are more than 1 plant available, first ask to choose a plant
-                if (plants.length > 1) {
-                    const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
-                        Markup.callbackButton(it.stationName, `plantDailyBalance ${it.stationCode}`))).extra()
-
-                    ctx.reply(
-                        "☀️ Select a plant for loading daily balance",
-                        plantsKeyboard
-                    )
-                } else {
-                    // If only one plant, just show its info
-                    let plantId = plants[0].stationCode
-                    getPlantDailyBalance(plantId, userId, ctx)
-                }
-            })
-            .catch(function (error) {
-                ctx.reply("Couldn't retrieve your plants 🤷‍♂️")
-            })
-    }
 
     function getPlantDailyBalance(plantId: string, userId: string, ctx: TelegrafContext) {
         fusionsolar.getPlantDailyKpi(plantId, userId).then(function (balance) {
@@ -60,4 +33,3 @@ function commandBalance(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 }
 
 export default commandBalance
-

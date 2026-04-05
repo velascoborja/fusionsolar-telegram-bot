@@ -1,56 +1,23 @@
-import { stat } from "fs"
-import { Markup, Telegraf } from "telegraf"
+import { Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import FusionSolar from "../datasource/api/fusionsolar"
-import { FusionSolarResponse } from "../datasource/api/models/response"
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
-import { Device } from "../models/device"
-import { DeviceDataItemMap } from "../models/deviceRealTime"
-import { MeterDataItemMap } from "../models/meterRealTime"
-import { Plant } from "../models/plant"
 import { Status } from "../models/status"
+import { selectPlant } from "./plantSelector"
 
 function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 
     bot.command('status', async (ctx) => {
-        loadUserPlants(fusionsolar, ctx)
+        ctx.reply("⏳ Loading...")
+        selectPlant(fusionsolar, ctx, 'plantStatus', '☀️ Select a plant for loading status',
+            (plantId, userId) => getPlantStatus(plantId, userId, ctx))
     })
 
     bot.action(/plantStatus (.+)/, async (ctx) => {
         ctx.reply("⏳ Loading plant status...")
         const userId = ctx.from?.id.toString()
-
         const plantId = ctx.match[1]
-
         getPlantStatus(plantId, userId, ctx)
     })
-
-    async function loadUserPlants(fusionsolar: FusionSolar, ctx: TelegrafContext) {
-        ctx.reply("⏳ Loading...")
-        const userId = ctx.message?.from?.id.toString()
-
-        fusionsolar.getStations(userId)
-            .then(async function (plants: Array<Plant>) {
-
-                // If there are more than 1 plant available, first ask to choose a plant
-                if (plants.length > 1) {
-                    const plantsKeyboard = Markup.inlineKeyboard(plants.map(it =>
-                        Markup.callbackButton(it.stationName, `plantStatus ${it.stationCode}`))).extra()
-
-                    ctx.reply(
-                        "☀️ Select a plant for loading status",
-                        plantsKeyboard
-                    )
-                } else {
-                    // If only one plant, just show its info
-                    let plantId = plants[0].stationCode
-                    getPlantStatus(plantId, userId, ctx)
-                }
-            })
-            .catch(function (error) {
-                ctx.reply("Couldn't retrieve your plants 🤷‍♂️")
-            })
-    }
 
     function getPlantStatus(plantId: string, userId: string, ctx: TelegrafContext) {
         fusionsolar.getStatus(plantId, userId).then(function (result) {
@@ -72,4 +39,3 @@ function commandStatus(bot: Telegraf<any>, fusionsolar: FusionSolar) {
 }
 
 export default commandStatus
-
