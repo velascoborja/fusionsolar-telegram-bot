@@ -11,6 +11,10 @@ import commandUsername from './commands/user'
 
 dotenv.config()
 
+if (!process.env.BOT_TOKEN) {
+    throw new Error("BOT_TOKEN environment variable is required")
+}
+
 new DatabaseDataSource().init('mongodb://localhost:27017', 'fusionsolarbot')
     .then(function (databaseDataSource) {
         initTelegraf(databaseDataSource)

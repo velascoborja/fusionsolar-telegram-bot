@@ -58,8 +58,9 @@ class FusionSolar {
 
     async getInverterForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<DeviceRealTime>>> {
         let inverterId = await this.getDevicesForPlantId(plantId, userId).then(function (devices) {
-            let inverterId = devices.find(element => element.devTypeId == 38).id
-            return inverterId
+            const inverter = devices.find(element => element.devTypeId == 38)
+            if (!inverter) throw new Error("No inverter device found for plant")
+            return inverter.id
         })
 
         return post(this.api, `getDevRealKpi`, this.db, userId, {
@@ -70,8 +71,9 @@ class FusionSolar {
 
     async getMeterForPlantId(plantId: string, userId: string): Promise<FusionSolarResponse<Array<MeterRealTime>>> {
         let meterId = await this.getDevicesForPlantId(plantId, userId).then(function (devices) {
-            let meterId = devices.find(element => element.devTypeId == 47).id
-            return meterId
+            const meter = devices.find(element => element.devTypeId == 47)
+            if (!meter) throw new Error("No meter device found for plant")
+            return meter.id
         })
 
         return post(this.api, `getDevRealKpi`, this.db, userId, {

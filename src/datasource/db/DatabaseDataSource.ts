@@ -51,29 +51,17 @@ class DatabaseDataSource {
     }
 
     async insertOrUpdatePlantDevices(devices: Array<Device>): Promise<boolean> {
-        const dataBase = this
-
-        return new Promise(function (resolve, reject) {
-
-            devices.forEach(function (device) {
-                dataBase.devicesCollection.updateOne({ id: device.id }, { $set: device }, { upsert: true })
-            })
-
-            resolve(true)
-        })
+        await Promise.all(devices.map(device =>
+            this.devicesCollection.updateOne({ id: device.id }, { $set: device }, { upsert: true })
+        ))
+        return true
     }
 
     async insertOrUpdateUserPlants(plants: Array<Plant>): Promise<boolean> {
-        const dataBase = this
-
-        return new Promise(function (resolve) {
-
-            plants.forEach(function (plant) {
-                dataBase.plantsCollection.updateOne({ userId: plant.userId }, { $set: plant }, { upsert: true })
-            })
-
-            resolve(true)
-        })
+        await Promise.all(plants.map(plant =>
+            this.plantsCollection.updateOne({ userId: plant.userId }, { $set: plant }, { upsert: true })
+        ))
+        return true
     }
 
     async getPlantsForUserId(userId: string): Promise<Array<Plant>> {
